@@ -21,21 +21,15 @@ class BaseController extends FOSRestController {
     }
 
     public function returnNullResponse() {
-        return array('success' => false, 'data' => array(), 'error' => 'No se encontraron datos');
-    }
-    public function returnNotExistInLdapResponse() {
-        return array('success' => false, 'data' => array(), 'error' => 'El usuario no existe en el Ldap configurado');
-    }
-    public function returnErrorLdapResponse() {
-        return array('success' => false, 'data' => array(), 'error' => 'Ocurrió un error al consultar el Ldap configurado');
+        return array('success' => false, 'data' => array(), 'error' => 'No data');
     }
 
     public function returnSecurityViolationResponse() {
-        return array('success' => false, 'data' => array(), 'error' => 'No se encontr&oacute; la llave de seguridad en la cabecera de la petici&oacute;n','code'=>403);
+        return array('success' => false, 'data' => array(), 'error' => $this->get('translator')->trans('access.token.notfound'),'code'=>403);
     }
 
     public function returnDeniedResponse() {
-        return array('success' => false, 'error' => 'No tiene permiso para ejecutar esta acci&oacute;n');
+        return array('success' => false, 'error' => $this->get('translator')->trans('access.token.notfound'));
     }
 
 
@@ -99,7 +93,7 @@ class BaseController extends FOSRestController {
         return $res;
     }
 
-    public function customFilterModel($entity, $customFunction, $params, $decorator = PrototypeDecorator::NESTED_OBJECTS) {
+    public function customFilterModel($entity, $customFunction, $params, $decorator = ResultDecorator::DEFAULT_DECORATOR) {
         $repo = $this->getRepo($entity);
         $qb = $repo->$customFunction($entity, $params, $decorator);
         $result = $repo->getResult($qb);
@@ -139,17 +133,12 @@ class BaseController extends FOSRestController {
 
             return array('success' => true);
         } catch (\Exception $exception) {
-            $class = get_class($exception);
             if ($useTransaction)
                 $repo->rollback();
             $this->resetManager();
             return $this->manageException($exception);
         }
     }
-
-    /*
-     * Metodo para la entidad pasada por parametros
-     * */
 
     public function removeEntityModel($model, $entity, $arrayPreDelete = array(), $arrayPostDelete = array(), $useTransaction = true) {
         $repo = $this->getRepo($model);
@@ -177,10 +166,8 @@ class BaseController extends FOSRestController {
                 }
             }
 
-
             return array('success' => true);
         } catch (\Exception $exception) {
-            $class = get_class($exception);
             if ($useTransaction)
                 $repo->rollback();
             $this->resetManager();
@@ -190,11 +177,6 @@ class BaseController extends FOSRestController {
     }
 
     public function extraValidate($data, $objectPersist, $extraValidate = array()) {
-        /* para especificar un validador comun 
-         * que no sea necesariamente la clase 
-         * que estoy guardando
-         * nombrevalidador=>array(ValidationTypes)
-         */
 
         foreach ($extraValidate as $validatorName => $validationsTypes) {
             $result = $this->get('manager.validator')->validate($validatorName, $data, $objectPersist, $validationsTypes);
@@ -240,10 +222,7 @@ class BaseController extends FOSRestController {
         $repo = $this->getRepo($model);
         $class = $repo->getClassName();
         $manager = $this->getManager();
-//        $user = $this->getUserOfCurrentRequest();
-//        if (!$user) {
-//            return $this->returnSecurityViolationResponse();
-//        }
+
         $entity = NULL;
         try {
             if ($useTransaction)
@@ -289,12 +268,7 @@ class BaseController extends FOSRestController {
     }
 
     public function manageException($exception) {
-
-        $return = array('success' => false, 'error' => 'Error desconocido.');
-        if($exception instanceof \Symfony\Component\Ldap\Exception\LdapException){
-            $return['error']='Verifique la configuración de la extensión del LDAP.';
-            return $return;
-        }
+        $return = array('success' => false, 'error' => 'Unknow error.');
         if (preg_match('/SQLSTATE\[23505\]/', $exception->getMessage())) {
             $return['error'] = $this->get('translator')->trans('23505');
         } else if (preg_match('/SQLSTATE\[23502\]/', $exception->getMessage())) {
@@ -316,16 +290,10 @@ class BaseController extends FOSRestController {
         } else
             $return['error'] = $exception->getMessage();
 
-
-
         return $return;
     }
 
     public function getRepo($entity) {
-
         return $this->getManager()->getRepository('AppBundle:' . $entity);
     }
-
-    /*
-     */
 }

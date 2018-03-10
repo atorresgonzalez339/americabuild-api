@@ -29,7 +29,7 @@ class UserController extends BaseController
      *   }
      * )
      * @Rest\Get("/api/users")
-     * @Method({"GET","OPTIONS"})
+     * @Method({"GET"})
      *
      */
     public function getAllAction()
@@ -39,7 +39,7 @@ class UserController extends BaseController
 
     /**
      * @Rest\Delete("/api/users/{id}")
-     * @Method({"DELETE","OPTIONS"})
+     * @Method({"DELETE"})
      */
     public function deleteAction($id)
     {
@@ -56,21 +56,41 @@ class UserController extends BaseController
      *   }
      * )
      * @Rest\Post("/api/users/register")
-     * @Method({"POST","OPTIONS"})
+     * @Method({"POST"})
      */
     public function postAction(Request $request)
     {
         $data["username"] = $request->get("username");
         $data["password"] = $request->get("password");
-        $data["name"] = $request->get("fullname");
-        $data["role"] = 2; //AUTHENTICATE_USER
-        $data["active"] = false;
+        $data["fullname"] = $request->get("fullname");
         $repassword = $request->get("repassword");
+
+        if ( filter_var( $data["username"], FILTER_VALIDATE_EMAIL) == false )
+        {
+            return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.email.error')), Response::HTTP_OK);
+        }
 
         if ( $data['password'] != $repassword )
         {
             return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.password.notmatch')), Response::HTTP_OK);
         }
+        $data["role"] = 2; //AUTHENTICATE_USER
+        $data["active"] = false;
+        $data["company"] = $request->get("company",1);// should be replaced with $request->get("company") when the fronted be implementing;
+        //var_dump($data['company']);
+        $company = $this->getRepo('Company')->find($data['company']);
+        //var_dump($company);
+        if ( !$company )
+        {
+            return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.company.notfound')), Response::HTTP_OK);
+        }
+
+        $domainName = substr(strrchr( $data["username"], "@"), 1);
+        if ( $company->getSubDomain() != $domainName )
+        {
+            return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.usercompany.subdomain',array("invalidemail" => $data["username"]))), Response::HTTP_OK);
+        }
+
         $save = $this->saveModel('User', $data);
         return new View($save, Response::HTTP_OK);
     }
@@ -86,7 +106,7 @@ class UserController extends BaseController
      *   }
      * )
      * @Rest\Put("/api/users")
-     * @Method({"PUT","OPTIONS"})
+     * @Method({"PUT"})
      */
     public function putAction(Request $request)
     {

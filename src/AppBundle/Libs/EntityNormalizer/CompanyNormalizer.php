@@ -7,11 +7,11 @@ use AppBundle\Libs\Normalizer\AbstractNormalizer;
 use AppBundle\Libs\Decorator\CustomDecorator;
 
 /**
- * Description of UserNormalizer
+ * Description of CompanyNormalizer
  *
  * @author code
  */
-class UserNormalizer extends AbstractNormalizer implements \Symfony\Component\DependencyInjection\ContainerAwareInterface {
+class CompanyNormalizer extends AbstractNormalizer implements \Symfony\Component\DependencyInjection\ContainerAwareInterface {
 
     private $container;
 
@@ -23,12 +23,11 @@ class UserNormalizer extends AbstractNormalizer implements \Symfony\Component\De
 
         switch ($prototype) {
             case CustomDecorator::DEFAULT_DECORATOR:
-                $repositoryUser=$this->container->get('doctrine')->getRepository('AppBundle:User');
+                $repositoryUser=$this->container->get('doctrine')->getRepository('AppBundle:Company');
                 $obj['id'] = $object->getId();
-                $obj['username'] = $object->getUsername();
-                $obj['fullname'] = $object->getFullName();
-                $obj['role'] = $normalice->normalize('normalizer.role', $object->getRole(), CustomDecorator::DEFAULT_DECORATOR);
-                $obj['company'] = $normalice->normalize('normalizer.company', $object->getCompany(), CustomDecorator::DEFAULT_DECORATOR);
+                $obj['companyName'] = $object->getCompanyName();
+                $obj['subdomain'] = $object->getSubDomain();
+                //$obj['role'] = $normalice->normalize('normalizer.role', $object->getRole(), CustomDecorator::DEFAULT_DECORATOR);
                 break;
         }
 

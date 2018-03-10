@@ -29,7 +29,7 @@ class AppController extends BaseController {
      * )
      *
      * @Rest\Post("/api/login")
-     * @Method({"POST","OPTIONS"})
+     * @Method({"POST"})
      */
     public function loginAction(Request $request) {
 

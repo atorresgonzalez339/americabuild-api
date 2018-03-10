@@ -37,9 +37,9 @@ class User implements UserInterface {
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="fullname", type="string", length=255)
      */
-    private $name;
+    private $fullname;
 
     /**
      * @var string
@@ -85,6 +85,15 @@ class User implements UserInterface {
      * )
      */
     private $role;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Company", inversedBy="users")
+     * @ORM\JoinColumn(
+     *     name="companyid",
+     *     referencedColumnName="id",
+     *     nullable=true)
+     */
+    private $company;
 
     public function __construct()
     {
@@ -141,12 +150,12 @@ class User implements UserInterface {
     /**
      * Set name
      *
-     * @param string $name
+     * @param string $fullname
      * @return User
      */
-    public function setName($name)
+    public function setFullName($fullname)
     {
-        $this->name = $name;
+        $this->fullname = $fullname;
 
         return $this;
     }
@@ -156,9 +165,9 @@ class User implements UserInterface {
      *
      * @return string 
      */
-    public function getName()
+    public function getFullName()
     {
-        return $this->name;
+        return $this->fullname;
     }
 
     /**
@@ -267,7 +276,7 @@ class User implements UserInterface {
      * @param \AppBundle\Entity\Role $role
      * @return User
      */
-    public function setRole(\AppBundle\Entity\Role$role)
+    public function setRole(\AppBundle\Entity\Role $role)
     {
         $this->role = $role;
 
@@ -282,5 +291,27 @@ class User implements UserInterface {
     public function getRole()
     {
         return $this->role;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \AppBundle\Entity\Company
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \AppBundle\Entity\Company $company
+     * @return User
+     */
+    public function setCompany(\AppBundle\Entity\Company $company)
+    {
+        $this->company = $company;
+        return $this;
     }
 }

@@ -18,7 +18,7 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
     }
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        return $userProvider->loadUserByUsername("juan@uci.cu");
+        return null;
     }
     public function checkCredentials($credentials, UserInterface $user)
     {

@@ -28,7 +28,7 @@ class BeforeControllerListener {
      */
     public function onKernelController(FilterControllerEvent $event) {
 
-        $freeURL = array('/api/users/register','/api/login', '/api/passwords/forgot');
+        $freeURL = $this->container->getParameter('free_url');
         $controller = $event->getController();
         $request = $event->getRequest();
         $uri = $request->getRequestUri();

@@ -15,16 +15,23 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 class RequestListener
 {
 
+    public function __construct($container) {
+        $this->container = $container;
+
+    }
+
     public function onKernelRequest(GetResponseEvent $event)
     {
-        $freeURL = array('/api/users/register','/api/login','/api/passwords/forgot');
+        $freeURL = $this->container->getParameter('free_url');
         $request = $event->getRequest();
         $method = $request->getMethod();
 
         if ('OPTIONS' === $method) {
+            /*
             $response=new Response('ok');
             $response->headers->set('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-Type, Access-Control-Allow-Origin, apiKey");
             $event->setResponse($response);
+            */
         } else {
             $uri = $request->getRequestUri();
             $key = $event->getRequest()->headers->get('apiKey');
