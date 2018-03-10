@@ -1,0 +1,20 @@
+E4.: Access denied.
+E5: Unknown database error.
+23000: Integrity violation error.
+23502: There are null values ​​in the operation.
+23503: The element you are trying to eliminate is being used in the system.
+23505: Database unique key violation.
+HV00N: Impossible to connect to the database.
+28000: Access denied to the database.
+53300: Too many connection to the database reached.
+8000: Unknown database error.
+unique.role: A role with the same name already exist.
+validation.email.error: The provided email is invalid.
+validation.email.notfound: The provided email does not exist.
+validation.user.notfound: The provided username does not exist.
+validation.user.active: The user is not activated.
+validation.password.incorrect: The password you entered is incorrect.
+validation.password.notmatch: The provided passwords do not match.
+access.token.notfound: Forbidden. You don't have permission perform this action.
+validation.company.notfound: The provided company does not exists.
+validation.usercompany.subdomain: The email "invalidemail" does not belong to the subdomain of the company provided.
