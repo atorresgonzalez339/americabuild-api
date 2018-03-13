@@ -74,23 +74,9 @@ class UserController extends BaseController
         {
             return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.password.notmatch')), Response::HTTP_OK);
         }
-        $data["role"] = 2; //AUTHENTICATE_USER
+        $data["role"] = 2; //AUTHENTICATED_USER
         $data["active"] = false;
-        $data["company"] = $request->get("company",1);
-        //var_dump($data['company']);
-        $company = $this->getRepo('Company')->find($data['company']);
-        //var_dump($company);
-        if ( !$company )
-        {
-            return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.company.notfound')), Response::HTTP_OK);
-        }
-        /*
-        $domainName = substr(strrchr( $data["username"], "@"), 1);
-        if ( $company->getSubDomain() != $domainName )
-        {
-            return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.usercompany.subdomain',array("invalidemail" => $data["username"]))), Response::HTTP_OK);
-        }
-        */
+        $data["company"] = 1; // Defafault Company
 
         $save = $this->saveModel('User', $data);
         return new View($save, Response::HTTP_OK);
