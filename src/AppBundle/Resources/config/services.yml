@@ -16,7 +16,7 @@ services:
           - { name: kernel.event_listener, event: kernel.exception, priority: 1 }
  manager.email:
          class: AppBundle\Libs\Helper\SendCustomEmail
-         arguments: ["@service_container"]
+         arguments: ["@service_container","@twig"]
  manager.validator:
         class: AppBundle\Libs\Validator\ManagerValidator
         arguments: ["@service_container"]

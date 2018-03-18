@@ -3,45 +3,78 @@
 namespace AppBundle\Libs\Helper;
 
 
+use AppBundle\Libs\Decorator\MailDecorator;
+use Twig_Environment as Environment;
+
 class SendCustomEmail
 {
 
     private $container;
     private $dir;
+    private $twig;
 
-    public function __construct($container)
+    public function __construct($container, Environment $twig )
     {
+        $this->twig = $twig;
         $this->container = $container;
         $separator = DIRECTORY_SEPARATOR;
         $this->dir = $this->container->getParameter('kernel.root_dir') . "$separator" . "logs" . $separator . "emails" . $separator;
     }
 
-    public function sendMessage($typeMail)
+    public function sendMessage($emailValues,$emailType)
     {
         $mailAcount = $this->container->getParameter('mailer_user');
 
         if ($mailAcount) {
 
             $message = \Swift_Message::newInstance()
-                ->setSubject("SUBJECT")
-                ->setFrom("kcarmenates@uci.cu")
-                ->setTo("kcarmenates@uci.cu")
-                ->setBody("Prueba");
+                ->setSubject($emailValues["subject"])
+                ->setFrom($mailAcount)
+                ->setTo($emailValues["email"]);
+
+            switch ($emailType)
+            {
+                case MailDecorator::REGISTER_ACTIVATION:
+                {
+                    $body = $this->twig->render("AppBundle:Emails:user_registration_email.html.twig",
+                                                array("activationUrl" => $emailValues["url"], "fullname" => $emailValues["fullname"], "systemName" => "American Build" ));
+                    $this->writeEmail($body,$emailValues["email"]);
+                    $message->setBody($body,"html/text");
+                    break;
+                }
+                case MailDecorator::PASSWORD_RECOVERY:
+                {
+                    $message->setBody($emailValues["url"]);
+                    break;
+                }
+            }
 
             try {
                 $send = $this->container->get('swiftmailer.mailer.default')->send($message);
 
                 if ($send) {
-                    $this->registerTraceOfEmail('SUCCESS_TRACE');
+                    return true;
                 } else {
-                    $this->registerTraceOfEmail('FAILED_TRACE');
+                    return false;
                 }
             } catch (\Exception $e) {
 
-                $this->registerTraceOfEmail('FAILED_TRACE');
+                $this->registerTraceOfEmail('FAILED_TO_SEND_THE EMAIL');
             }
-        } else {
-            $this->registerTraceOfEmail('SUCCESS_TRACE');
+        }
+    }
+
+    // this method is temporal. It's only for testing.
+    private function writeEmail($body, $recipient)
+    {
+        try {
+            $date = new \DateTime('now');
+            $date = $date->format('YmdHis');
+            $myfile = @fopen($this->dir . ($recipient.$date) . ".html", "w");
+
+            @fwrite($myfile, $body);
+        } catch (\Exception $e) {
+
         }
     }
 

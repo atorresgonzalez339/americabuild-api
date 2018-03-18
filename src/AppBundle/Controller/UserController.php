@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Libs\Controller\BaseController;
+use AppBundle\Libs\Decorator\MailDecorator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
@@ -76,9 +77,48 @@ class UserController extends BaseController
         }
         $data["role"] = 2; //AUTHENTICATED_USER
         $data["active"] = false;
-        $data["company"] = 1; // Defafault Company
+        $data["company"] = 1; // Default Company
 
+        $validationToken = $this->get('lexik_jwt_authentication.encoder')->encode(['username' => $data["username"], "actionName" => "userActivation"]);
+        $data["validationToken"] = $validationToken;
         $save = $this->saveModel('User', $data);
+
+        $origin = $request->headers->get("Origin");
+        $emailParameters = array( "email" => $data["username"], "subject" => "User registration", "url" => $origin."/user/activation?token=".$validationToken, "fullname" => $data["fullname"]);
+        $this->get("manager.email")->sendMessage( $emailParameters, MailDecorator::REGISTER_ACTIVATION );
+
+        return new View($save, Response::HTTP_OK);
+    }
+
+    /**
+     * Create a new User
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Return an object with property success to inform the result of response an data array with id of new resource create",
+     *   statusCodes = {
+     *     200 = "Returned when successful"
+     *   }
+     * )
+     * @Rest\Put("/api/users/register/activation")
+     * @Method({"PUT"})
+     */
+    public function userActivationAction(Request $request)
+    {
+        $data["token"] = $request->get("token");
+        $tokenInfo = $this->get('lexik_jwt_authentication.encoder')->decode($data["token"]);
+
+        if ( !isset( $tokenInfo["username"] ) || !isset( $tokenInfo["actionName"] ) || $tokenInfo["actionName"] != "userActivation" )
+        {
+            return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.validationtoken.invalid')), Response::HTTP_OK);
+        }
+
+        $user = $this->getRepo('User')->findOneBy(array("username" => $tokenInfo["username"]));
+        if ( !$user || $user->getValidationToken() != $data["token"] )
+        {
+            return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.validationtoken.invalid')), Response::HTTP_OK);
+        }
+
+        $save = $this->saveModel('User', array('id' => $user->getId(), 'validationToken' => null, 'active' => true ) );
         return new View($save, Response::HTTP_OK);
     }
 
