@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Libs\Decorator\MailDecorator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -128,13 +129,77 @@ class AppController extends BaseController {
             return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.email.notfound')), Response::HTTP_OK);
         }
 
-        $validationToken = $this->get('lexik_jwt_authentication.encoder')->encode(['username' => $user->getUsername()]);
-        // aqui en envio del correo
+        $validationToken = $this->get('lexik_jwt_authentication.encoder')->encode(['username' => $username, "actionName" => "passwordReset"]);
+
         $result = $this->saveModel('User', array('id' => $user->getId(), 'validationToken' => $validationToken, 'token' => null ) );
         if ($result['success'] == false) {
             return new View($result, Response::HTTP_OK);
         }
 
-        return new View(array('success' => true), Response::HTTP_OK);
+        $origin = $request->headers->get("Origin");
+        $emailParameters = array( "email" => $username, "subject" => "Password Reset", "url" => $origin."/user/recover?token=".$validationToken, "fullname" =>$user->getFullName() );
+        $this->get("manager.email")->sendMessage( $emailParameters, MailDecorator::PASSWORD_RECOVERY );
+
+        return new View(array('success' => true,), Response::HTTP_OK);
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="Create a new User",
+     *  input="Your\Namespace\Form\Type\YourType",
+     *  output="Your\Namespace\Class",
+     *     headers={
+     *         {
+     *             "name"="X-AUTHORIZE-KEY",
+     *             "description"="Authorization key",
+     *              "required":true
+     *         }
+     *     }
+     * )
+     *
+     * @Rest\Post("/api/passwords/reset")
+     * @Method({"Post","OPTIONS"})
+     */
+    public function resetPasswordAction(Request $request) {
+
+        $data["token"] = $request->get("token");
+        $data["password"] = $request->get("password");
+        $data["repassword"] = $request->get("repassword");
+
+        $tokenInfo = $this->get('lexik_jwt_authentication.encoder')->decode($data["token"]);
+
+        if ( !isset( $tokenInfo["username"] ) || !isset( $tokenInfo["actionName"] ) || $tokenInfo["actionName"] != "passwordReset" )
+        {
+            return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.validationtoken.invalid')), Response::HTTP_OK);
+        }
+
+        $user = $this->getRepo('User')->findOneBy(array("username" => $tokenInfo["username"]));
+        if ( !$user || $user->getValidationToken() != $data["token"] )
+        {
+            return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.validationtoken.invalid')), Response::HTTP_OK);
+        }
+
+        if (!$user->getActive())
+        {
+            return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.user.active')), Response::HTTP_OK);
+        }
+
+        if ( strtotime("now") - ((int)$tokenInfo["iat"] ) > 60*60*24*3) // expiration time 3 days -> seconds*minuts*hours*days
+        {
+            return new View(array("success"=> false, "error" => $this->get('translator')->trans('validation.validationtoken.expired') ), Response::HTTP_OK);
+        }
+
+        if ( !isset($data["password"]) || !isset($data["repassword"]))
+        {
+            return new View(array("success"=> true, "token" => $data["token"] ), Response::HTTP_OK);
+        }
+
+        if ( $data["password"] != $data["repassword"] )
+        {
+            return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.password.notmatch')), Response::HTTP_OK);
+        }
+
+        $save = $this->saveModel('User', array('id' => $user->getId(), 'validationToken' => null, "password" => $data["password"]) );
+        return new View($save, Response::HTTP_OK);
     }
 }

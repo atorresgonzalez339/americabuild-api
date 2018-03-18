@@ -84,7 +84,7 @@ class UserController extends BaseController
         $save = $this->saveModel('User', $data);
 
         $origin = $request->headers->get("Origin");
-        $emailParameters = array( "email" => $data["username"], "subject" => "User registration", "url" => $origin."/user/activation?token=".$validationToken, "fullname" => $data["fullname"]);
+        $emailParameters = array( "email" => $data["username"], "subject" => "User Registration", "url" => $origin."/user/activation?token=".$validationToken, "fullname" => $data["fullname"]);
         $this->get("manager.email")->sendMessage( $emailParameters, MailDecorator::REGISTER_ACTIVATION );
 
         return new View($save, Response::HTTP_OK);

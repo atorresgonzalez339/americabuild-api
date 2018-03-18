@@ -44,7 +44,10 @@ class SendCustomEmail
                 }
                 case MailDecorator::PASSWORD_RECOVERY:
                 {
-                    $message->setBody($emailValues["url"]);
+                    $body = $this->twig->render("AppBundle:Emails:password_reset_email.html.twig",
+                        array("activationUrl" => $emailValues["url"], "fullname" => $emailValues["fullname"], "systemName" => "American Build" ));
+                    $this->writeEmail($body,$emailValues["email"]);
+                    $message->setBody($body,"html/text");
                     break;
                 }
             }

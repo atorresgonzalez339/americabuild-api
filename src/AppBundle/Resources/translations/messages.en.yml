@@ -14,6 +14,7 @@ validation.email.notfound: The provided email does not exist.
 validation.user.notfound: The provided username does not exist.
 validation.user.active: The user is not activated.
 validation.validationtoken.invalid: The provided token is invalid.
+validation.validationtoken.expired: The provided token has expired.
 validation.password.incorrect: The password you entered is incorrect.
 validation.password.notmatch: The provided passwords do not match.
 access.token.notfound: Forbidden. You don't have permission perform this action.
