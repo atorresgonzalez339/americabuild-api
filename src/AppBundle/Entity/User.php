@@ -95,9 +95,15 @@ class User implements UserInterface {
      */
     private $company;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Permit", mappedBy="user")
+     */
+    private $permits;
+
     public function __construct()
     {
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
+        $this->permits = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function eraseCredentials() {}
@@ -127,7 +133,7 @@ class User implements UserInterface {
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -163,7 +169,7 @@ class User implements UserInterface {
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getFullName()
     {
@@ -217,7 +223,7 @@ class User implements UserInterface {
     /**
      * Get validationToken
      *
-     * @return string 
+     * @return string
      */
     public function getValidationToken()
     {
@@ -240,7 +246,7 @@ class User implements UserInterface {
     /**
      * Get active
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getActive()
     {
@@ -263,7 +269,7 @@ class User implements UserInterface {
     /**
      * Get token
      *
-     * @return string 
+     * @return string
      */
     public function getToken()
     {
@@ -313,5 +319,38 @@ class User implements UserInterface {
     {
         $this->company = $company;
         return $this;
+    }
+
+    /**
+     * Add permits
+     *
+     * @param \AppBundle\Entity\Permit $permits
+     * @return User
+     */
+    public function addPermit(\AppBundle\Entity\Permit $permits)
+    {
+        $this->permits[] = $permits;
+
+        return $this;
+    }
+
+    /**
+     * Remove permits
+     *
+     * @param \AppBundle\Entity\Permit $permits
+     */
+    public function removePermit(\AppBundle\Entity\Permit $permits)
+    {
+        $this->permits->removeElement($permits);
+    }
+
+    /**
+     * Get permits
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPermits()
+    {
+        return $this->permits;
     }
 }

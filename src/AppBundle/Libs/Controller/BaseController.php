@@ -51,8 +51,11 @@ class BaseController extends FOSRestController {
         if ($request) {
             $userRepo = $this->getRepo('User');
             $token = $request->headers->get('apiKey');
-            $user = $userRepo->findOneBy(array('token' => $token));
-            return $user;
+            if ($token)
+            {
+                $user = $userRepo->findOneBy(array('token' => $token));
+                return $user;
+            }
         }
         return null;
     }

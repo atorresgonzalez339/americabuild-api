@@ -23,12 +23,16 @@ class UserNormalizer extends AbstractNormalizer implements \Symfony\Component\De
 
         switch ($prototype) {
             case CustomDecorator::DEFAULT_DECORATOR:
-                $repositoryUser=$this->container->get('doctrine')->getRepository('AppBundle:User');
                 $obj['id'] = $object->getId();
                 $obj['username'] = $object->getUsername();
                 $obj['fullname'] = $object->getFullName();
                 $obj['role'] = $normalice->normalize('normalizer.role', $object->getRole(), CustomDecorator::DEFAULT_DECORATOR);
                 $obj['company'] = $normalice->normalize('normalizer.company', $object->getCompany(), CustomDecorator::DEFAULT_DECORATOR);
+                break;
+            case CustomDecorator::SIMPLE:
+                $obj['id'] = $object->getId();
+                $obj['username'] = $object->getUsername();
+                $obj['fullname'] = $object->getFullName();
                 break;
         }
 

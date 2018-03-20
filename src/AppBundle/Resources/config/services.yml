@@ -31,3 +31,7 @@ services:
         class: AppBundle\Libs\EntityNormalizer\CompanyNormalizer
  normalizer.user:
         class: AppBundle\Libs\EntityNormalizer\UserNormalizer
+ normalizer.permit:
+        class: AppBundle\Libs\EntityNormalizer\PermitNormalizer
+ normalizer.permittype:
+        class: AppBundle\Libs\EntityNormalizer\PermitTypeNormalizer
