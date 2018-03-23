@@ -100,10 +100,19 @@ class User implements UserInterface {
      */
     private $permits;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitUser", mappedBy="user")
+     */
+    private $permitUsers;
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
         $this->permits = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->permitUsers = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function eraseCredentials() {}
@@ -352,5 +361,38 @@ class User implements UserInterface {
     public function getPermits()
     {
         return $this->permits;
+    }
+
+    /**
+     * Add permitUsers
+     *
+     * @param \AppBundle\Entity\PermitUser $permitUsers
+     * @return User
+     */
+    public function addPermitUser(\AppBundle\Entity\PermitUser $permitUsers)
+    {
+        $this->permitUsers[] = $permitUsers;
+
+        return $this;
+    }
+
+    /**
+     * Remove permitUsers
+     *
+     * @param \AppBundle\Entity\PermitUser $permitUsers
+     */
+    public function removePermitUser(\AppBundle\Entity\PermitUser $permitUsers)
+    {
+        $this->permitUsers->removeElement($permitUsers);
+    }
+
+    /**
+     * Get permitUsers
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPermitUsers()
+    {
+        return $this->permitUsers;
     }
 }

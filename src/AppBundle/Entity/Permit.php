@@ -54,6 +54,18 @@ class Permit
     private $user;
 
     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitUser", mappedBy="permit")
+     */
+    private $permitUsers;
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->permitUsers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
      * Get id
      *
      * @return integer 
@@ -153,5 +165,38 @@ class Permit
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Add permitUsers
+     *
+     * @param \AppBundle\Entity\PermitUser $permitUsers
+     * @return Permit
+     */
+    public function addPermitUser(\AppBundle\Entity\PermitUser $permitUsers)
+    {
+        $this->permitUsers[] = $permitUsers;
+
+        return $this;
+    }
+
+    /**
+     * Remove permitUsers
+     *
+     * @param \AppBundle\Entity\PermitUser $permitUsers
+     */
+    public function removePermitUser(\AppBundle\Entity\PermitUser $permitUsers)
+    {
+        $this->permitUsers->removeElement($permitUsers);
+    }
+
+    /**
+     * Get permitUsers
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPermitUsers()
+    {
+        return $this->permitUsers;
     }
 }

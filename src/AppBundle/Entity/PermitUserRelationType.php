@@ -42,6 +42,17 @@ class PermitUserRelationType
      */
     private $type;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitUser", mappedBy="permitUserRelationType")
+     */
+    private $permitUsers;
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->permitUsers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -120,5 +131,38 @@ class PermitUserRelationType
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Add permitUsers
+     *
+     * @param \AppBundle\Entity\PermitUser $permitUsers
+     * @return PermitUserRelationType
+     */
+    public function addPermitUser(\AppBundle\Entity\PermitUser $permitUsers)
+    {
+        $this->permitUsers[] = $permitUsers;
+
+        return $this;
+    }
+
+    /**
+     * Remove permitUsers
+     *
+     * @param \AppBundle\Entity\PermitUser $permitUsers
+     */
+    public function removePermitUser(\AppBundle\Entity\PermitUser $permitUsers)
+    {
+        $this->permitUsers->removeElement($permitUsers);
+    }
+
+    /**
+     * Get permitUsers
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPermitUsers()
+    {
+        return $this->permitUsers;
     }
 }
