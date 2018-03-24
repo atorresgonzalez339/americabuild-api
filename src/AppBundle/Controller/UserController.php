@@ -39,6 +39,21 @@ class UserController extends BaseController
     }
 
     /**
+     * @Rest\Get("/api/users/info")
+     * @Method({"GET"})
+     */
+    public function getUserInfoAction()
+    {
+        $user = $this->getUserOfCurrentRequest();
+        if (!$user)
+        {
+            return $this->returnSecurityViolationResponse();
+        }
+
+        return $this->normalizeResult("User", $user, ResultDecorator::DEFAULT_DECORATOR);
+    }
+
+    /**
      * @Rest\Delete("/api/users/{id}")
      * @Method({"DELETE"})
      */

@@ -58,7 +58,7 @@ class BeforeControllerListener {
                         return new JsonResponse(array('success' => false, 'error' => 'The provided token is invalid', 'code' => 3000));
                     });
                 } else {
-                    $this->container->get('security.context')->setToken( new UsernamePasswordToken($result,$result->getToken(),'app',$result->getRoles()));
+                    //$this->container->get('security.context')->setToken( new UsernamePasswordToken($result,$result->getToken(),'app',$result->getRoles()));
 
 
                 }
