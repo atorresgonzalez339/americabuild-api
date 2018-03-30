@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Libs\Controller\BaseController;
+use AppBundle\Listeners\ExceptionListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
@@ -76,14 +77,83 @@ class PermitController extends BaseController
             return $this->returnSecurityViolationResponse();
         }
 
-        $data["user"] = $user->getId();
-        $data["type"] = $request->get("type");
-        $createdAt = new \DateTime("now");
-        $data["createdAt"] = $createdAt->format('Y-m-d H:i:s');
-        $data["updatedAt"] = $createdAt->format('Y-m-d H:i:s');
+        $repo = $this->getRepo("Permit");
+        try {
+            // permit user profile owner / tenant -information
+            $ownerTenantUserProfile = $request->get("ownerTenantUserProfile");
+            if ( !isset( $ownerTenantUserProfile ) )
+            {
+                throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "ownerTenantUserProfile")), 4000);
+            }
 
-        $save = $this->saveModel('Permit', $data);
-        return new View($save, Response::HTTP_OK);
+            // permit user profile contractor -information
+            $contractorUserProfile = $request->get("contractorUserProfile");
+            if ( !isset( $contractorUserProfile ) )
+            {
+                throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "contractorUserProfile")), 4000);
+            }
+
+            // permit
+            $permit["user"] = $user->getId();
+            $permit["type"] = $request->get("permitType", 1);
+            $createdAt = new \DateTime("now");
+            $permit["createdAt"] = $createdAt->format('Y-m-d H:i:s');
+            $permit["updatedAt"] = $createdAt->format('Y-m-d H:i:s');
+
+            $repo->beginTransaction();
+            $permitSaved = $this->saveModel('Permit', $permit, array(), false);
+            if (!$permitSaved["success"]) {
+                throw new \Exception($permitSaved["error"], 4000);
+            }
+
+            $permitUPSaved = $this->saveModel('PermitUserProfile', $ownerTenantUserProfile, array("PermitUserProfile"=>array("ValuesValidation")), false);
+            if (!$permitUPSaved["success"]) {
+                throw new \Exception($permitUPSaved["error"], 4000);
+            }
+
+            // permit user for owner / tenant
+            $permitUser["user"] = $user->getId();
+            $permitUser["permit"] = $permitSaved['data']['id'];
+            $permitUser["permitUserProfile"] = $permitUPSaved['data']['id'];
+            $permitUser["permitUserRelationType"] = 1; //Owner
+            $permitUserSaved = $this->saveModel('PermitUser', $permitUser, array(), false);
+
+            if (!$permitUserSaved["success"]) {
+                throw new \Exception($permitUPSaved["error"], 4000);
+            }
+
+            $permitUPSaved = $this->saveModel('PermitUserProfile', $contractorUserProfile, array(), false);
+            if (!$permitUPSaved["success"]) {
+                throw new \Exception($permitUPSaved["error"], 4000);
+            }
+
+            // permit user for contractor
+            $permitUser["user"] = $user->getId();
+            $permitUser["permit"] = $permitSaved['data']['id'];
+            $permitUser["permitUserProfile"] = $permitUPSaved['data']['id'];
+            $permitUser["permitUserRelationType"] = 2; //Contractor
+            $permitUserSaved = $this->saveModel('PermitUser', $permitUser, array(), false);
+
+            if (!$permitUserSaved["success"]) {
+                throw new \Exception($permitUPSaved["error"], 4000);
+            }
+
+            $repo->commit();
+            return new View($permitSaved,Response::HTTP_OK);
+        }
+        catch (\Exception $ex )
+        {
+            $repo->rollback();
+            $this->resetManager();
+            if ($ex->getCode() != 4000)
+            {
+                return $this->manageException($ex);
+            }
+            else
+            {
+                return array('success' => false, 'error' => $ex->getMessage());
+            }
+        }
     }
 
     /**

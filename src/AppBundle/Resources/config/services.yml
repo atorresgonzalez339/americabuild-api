@@ -20,6 +20,8 @@ services:
  manager.validator:
         class: AppBundle\Libs\Validator\ManagerValidator
         arguments: ["@service_container"]
+ validator.permituserprofile:
+         class: AppBundle\Libs\Validator\PermitUserProfileValidator
  app.request_listener:
         class: AppBundle\Listeners\RequestListener
         arguments: ["@service_container"]

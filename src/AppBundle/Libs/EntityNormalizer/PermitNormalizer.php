@@ -24,8 +24,8 @@ class PermitNormalizer extends AbstractNormalizer implements \Symfony\Component\
         switch ($prototype) {
             case CustomDecorator::DEFAULT_DECORATOR:
                 $obj['id'] = $object->getId();
-                $obj['createdAt'] = $object->getCreatedAt();
-                $obj['updatedAt'] = $object->getUpdatedAt();
+                $obj['createdAt'] = $object->getCreatedAt()->format('Y-m-d H:i:s');
+                $obj['updatedAt'] = $object->getUpdatedAt()->format('Y-m-d H:i:s');
                 $obj['user'] = $normalice->normalize('normalizer.user', $object->getUser(), CustomDecorator::SIMPLE);
                 $obj['type'] = $normalice->normalize('normalizer.permittype', $object->getType(), CustomDecorator::DEFAULT_DECORATOR);
                 break;

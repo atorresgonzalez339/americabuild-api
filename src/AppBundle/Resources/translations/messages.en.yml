@@ -22,3 +22,5 @@ validation.company.notfound: The provided company does not exists.
 validation.usercompany.subdomain: The email "invalidemail" does not belong to the subdomain of the company provided.
 validation.updateid.notfound: To perform update actions the parameter "id" must be provided.
 validation.identifier.invalid: There is not value with identifier id:idvalue.
+validation.parameters.requiered: There are null values. Parameter 'paramname' is requiered.
+validation.phonenumber.invalid: The provided phone number is not valid.

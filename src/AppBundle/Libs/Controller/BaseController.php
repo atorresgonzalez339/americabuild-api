@@ -183,10 +183,8 @@ class BaseController extends FOSRestController {
 
         foreach ($extraValidate as $validatorName => $validationsTypes) {
             $result = $this->get('manager.validator')->validate($validatorName, $data, $objectPersist, $validationsTypes);
-            if (!is_string($result)) {
-                throw new LocalException("E14", array('validator.' . $validatorName));
-            } else if (strlen($result) > 0) {
-                throw new LocalException("E11", array($result));
+            if (strlen($result) > 0) {
+                throw new \Exception($result);
             }
         }
         return true;
