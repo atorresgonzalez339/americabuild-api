@@ -36,7 +36,7 @@ class RequestListener
             $uri = $request->getRequestUri();
             $key = $event->getRequest()->headers->get('apiKey');
             if (!in_array($uri, $freeURL) && empty($key)) {
-                $event->setResponse(new JsonResponse(array('success' => false, 'error' => 'Forbidden. You don\'t have permission perform this action',"code"=>403)));
+                $event->setResponse(new JsonResponse(array('success' => false, 'error' => 'Forbidden. You don\'t have permission to perform this action',"code"=>403)));
                 return;
             }
 

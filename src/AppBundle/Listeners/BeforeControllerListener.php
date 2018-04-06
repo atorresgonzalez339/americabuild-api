@@ -55,7 +55,7 @@ class BeforeControllerListener {
                 $result = $this->container->get('doctrine')->getRepository('AppBundle:User')->findOneBy(array('token' => $key));
                 if (!$result) {
                     $event->setController(function() {
-                        return new JsonResponse(array('success' => false, 'error' => 'The provided token is invalid', 'code' => 3000));
+                        return new JsonResponse(array('success' => false, 'error' => 'The provided token is invalid', 'code' => 403));
                     });
                 } else {
                     //$this->container->get('security.context')->setToken( new UsernamePasswordToken($result,$result->getToken(),'app',$result->getRoles()));

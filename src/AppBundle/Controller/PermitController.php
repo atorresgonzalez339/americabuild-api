@@ -93,6 +93,13 @@ class PermitController extends BaseController
                 throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "contractorUserProfile")), 4000);
             }
 
+            // permit user profile architect -information
+            $architectUserProfile = $request->get("architectUserProfile");
+            if ( !isset( $contractorUserProfile ) )
+            {
+                throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "architectUserProfile")), 4000);
+            }
+
             // permit
             $permit["user"] = $user->getId();
             $permit["type"] = $request->get("permitType", 1);
@@ -122,7 +129,7 @@ class PermitController extends BaseController
                 throw new \Exception($permitUPSaved["error"], 4000);
             }
 
-            $permitUPSaved = $this->saveModel('PermitUserProfile', $contractorUserProfile, array(), false);
+            $permitUPSaved = $this->saveModel('PermitUserProfile', $contractorUserProfile, array("PermitUserProfile"=>array("ValuesValidation")), false);
             if (!$permitUPSaved["success"]) {
                 throw new \Exception($permitUPSaved["error"], 4000);
             }
@@ -132,6 +139,22 @@ class PermitController extends BaseController
             $permitUser["permit"] = $permitSaved['data']['id'];
             $permitUser["permitUserProfile"] = $permitUPSaved['data']['id'];
             $permitUser["permitUserRelationType"] = 2; //Contractor
+            $permitUserSaved = $this->saveModel('PermitUser', $permitUser, array(), false);
+
+            if (!$permitUserSaved["success"]) {
+                throw new \Exception($permitUPSaved["error"], 4000);
+            }
+
+            $permitUPSaved = $this->saveModel('PermitUserProfile', $architectUserProfile, array("PermitUserProfile"=>array("ValuesValidation")), false);
+            if (!$permitUPSaved["success"]) {
+                throw new \Exception($permitUPSaved["error"], 4000);
+            }
+
+            // permit user for architect
+            $permitUser["user"] = $user->getId();
+            $permitUser["permit"] = $permitSaved['data']['id'];
+            $permitUser["permitUserProfile"] = $permitUPSaved['data']['id'];
+            $permitUser["permitUserRelationType"] = 2; //Architect -- should be 3.
             $permitUserSaved = $this->saveModel('PermitUser', $permitUser, array(), false);
 
             if (!$permitUserSaved["success"]) {
