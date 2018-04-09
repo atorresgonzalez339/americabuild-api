@@ -67,7 +67,7 @@ class PermitUserProfile
     /**
      * @var int
      *
-     * @ORM\Column(name="phone_number", type="integer")
+     * @ORM\Column(name="phone_number", type="string", length=255)
      */
     private $phoneNumber;
 
