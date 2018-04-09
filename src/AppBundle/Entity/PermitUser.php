@@ -35,7 +35,8 @@ class PermitUser
      * @ORM\JoinColumn(
      *     name="permitid",
      *     referencedColumnName="id",
-     *     nullable=true)
+     *     nullable=true,
+     *     onDelete="CASCADE")
      */
     private $permit;
 

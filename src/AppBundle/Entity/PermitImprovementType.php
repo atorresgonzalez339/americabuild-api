@@ -42,6 +42,18 @@ class PermitImprovementType
      */
     private $type;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitChangeType", mappedBy="typeOfImprovement")
+     */
+    private $permits;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->permits = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -120,5 +132,38 @@ class PermitImprovementType
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Add permits
+     *
+     * @param \AppBundle\Entity\PermitChangeType $permits
+     * @return PermitImprovementType
+     */
+    public function addPermit(\AppBundle\Entity\PermitChangeType $permits)
+    {
+        $this->permits[] = $permits;
+
+        return $this;
+    }
+
+    /**
+     * Remove permits
+     *
+     * @param \AppBundle\Entity\PermitChangeType $permits
+     */
+    public function removePermit(\AppBundle\Entity\PermitChangeType $permits)
+    {
+        $this->permits->removeElement($permits);
+    }
+
+    /**
+     * Get permits
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPermits()
+    {
+        return $this->permits;
     }
 }

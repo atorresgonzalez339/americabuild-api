@@ -36,6 +36,83 @@ class Permit
     private $updatedAt;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="folio_number", type="string", length=255)
+     */
+    private $folioNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="number_of_units", type="integer")
+     */
+    private $numberOfUnits;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="lot", type="string", length=255)
+     */
+    private $lot;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="block ",  type="string", length=255)
+     */
+    private $block ;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="subdivision", type="string", length=255)
+     */
+    private $subdivision;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="pbpg ",  type="string", length=255)
+     */
+    private $pbpg;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="current_use_of_property", type="string", length=255)
+     */
+    private $currentUseOfProperty;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description_of_work ",  type="text")
+     */
+    private $descriptionOfWork;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="estimate_value", type="decimal", precision=15)
+     */
+    private $estimateValue;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="area ",  type="decimal", precision=15)
+     */
+    private $area;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="length ",  type="decimal",  precision=15)
+     */
+    private $length;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PermitType", inversedBy="permits")
      * @ORM\JoinColumn(
      *     name="typeid",
@@ -57,6 +134,15 @@ class Permit
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitUser", mappedBy="permit")
      */
     private $permitUsers;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PermitImprovementType", inversedBy="permits")
+     * @ORM\JoinColumn(
+     *     name="improvementid",
+     *     referencedColumnName="id",
+     *     nullable=false)
+     */
+    private $typeOfImprovement;
     /**
      * Constructor
      */
@@ -119,6 +205,259 @@ class Permit
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * Set folioNumber
+     *
+     * @param string $folioNumber
+     * @return Permit
+     */
+    public function setFolioNumber($folioNumber)
+    {
+        $this->folioNumber = $folioNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get folioNumber
+     *
+     * @return string 
+     */
+    public function getFolioNumber()
+    {
+        return $this->folioNumber;
+    }
+
+    /**
+     * Set numberOfUnits
+     *
+     * @param integer $numberOfUnits
+     * @return Permit
+     */
+    public function setNumberOfUnits($numberOfUnits)
+    {
+        $this->numberOfUnits = $numberOfUnits;
+
+        return $this;
+    }
+
+    /**
+     * Get numberOfUnits
+     *
+     * @return integer 
+     */
+    public function getNumberOfUnits()
+    {
+        return $this->numberOfUnits;
+    }
+
+    /**
+     * Set lot
+     *
+     * @param string $lot
+     * @return Permit
+     */
+    public function setLot($lot)
+    {
+        $this->lot = $lot;
+
+        return $this;
+    }
+
+    /**
+     * Get lot
+     *
+     * @return string 
+     */
+    public function getLot()
+    {
+        return $this->lot;
+    }
+
+    /**
+     * Set block
+     *
+     * @param string $block
+     * @return Permit
+     */
+    public function setBlock($block)
+    {
+        $this->block = $block;
+
+        return $this;
+    }
+
+    /**
+     * Get block
+     *
+     * @return string 
+     */
+    public function getBlock()
+    {
+        return $this->block;
+    }
+
+    /**
+     * Set subdivision
+     *
+     * @param string $subdivision
+     * @return Permit
+     */
+    public function setSubdivision($subdivision)
+    {
+        $this->subdivision = $subdivision;
+
+        return $this;
+    }
+
+    /**
+     * Get subdivision
+     *
+     * @return string 
+     */
+    public function getSubdivision()
+    {
+        return $this->subdivision;
+    }
+
+    /**
+     * Set pbpg
+     *
+     * @param string $pbpg
+     * @return Permit
+     */
+    public function setPbpg($pbpg)
+    {
+        $this->pbpg = $pbpg;
+
+        return $this;
+    }
+
+    /**
+     * Get pbpg
+     *
+     * @return string 
+     */
+    public function getPbpg()
+    {
+        return $this->pbpg;
+    }
+
+    /**
+     * Set currentUseOfProperty
+     *
+     * @param string $currentUseOfProperty
+     * @return Permit
+     */
+    public function setCurrentUseOfProperty($currentUseOfProperty)
+    {
+        $this->currentUseOfProperty = $currentUseOfProperty;
+
+        return $this;
+    }
+
+    /**
+     * Get currentUseOfProperty
+     *
+     * @return string 
+     */
+    public function getCurrentUseOfProperty()
+    {
+        return $this->currentUseOfProperty;
+    }
+
+    /**
+     * Set descriptionOfWork
+     *
+     * @param string $descriptionOfWork
+     * @return Permit
+     */
+    public function setDescriptionOfWork($descriptionOfWork)
+    {
+        $this->descriptionOfWork = $descriptionOfWork;
+
+        return $this;
+    }
+
+    /**
+     * Get descriptionOfWork
+     *
+     * @return string 
+     */
+    public function getDescriptionOfWork()
+    {
+        return $this->descriptionOfWork;
+    }
+
+    /**
+     * Set estimateValue
+     *
+     * @param string $estimateValue
+     * @return Permit
+     */
+    public function setEstimateValue($estimateValue)
+    {
+        $this->estimateValue = $estimateValue;
+
+        return $this;
+    }
+
+    /**
+     * Get estimateValue
+     *
+     * @return string 
+     */
+    public function getEstimateValue()
+    {
+        return $this->estimateValue;
+    }
+
+    /**
+     * Set area
+     *
+     * @param string $area
+     * @return Permit
+     */
+    public function setArea($area)
+    {
+        $this->area = $area;
+
+        return $this;
+    }
+
+    /**
+     * Get area
+     *
+     * @return string 
+     */
+    public function getArea()
+    {
+        return $this->area;
+    }
+
+    /**
+     * Set length
+     *
+     * @param string $length
+     * @return Permit
+     */
+    public function setLength($length)
+    {
+        $this->length = $length;
+
+        return $this;
+    }
+
+    /**
+     * Get length
+     *
+     * @return string 
+     */
+    public function getLength()
+    {
+        return $this->length;
     }
 
     /**
@@ -198,5 +537,28 @@ class Permit
     public function getPermitUsers()
     {
         return $this->permitUsers;
+    }
+
+    /**
+     * Set typeOfImprovement
+     *
+     * @param \AppBundle\Entity\PermitImprovementType $typeOfImprovement
+     * @return Permit
+     */
+    public function setTypeOfImprovement(\AppBundle\Entity\PermitImprovementType $typeOfImprovement)
+    {
+        $this->typeOfImprovement = $typeOfImprovement;
+
+        return $this;
+    }
+
+    /**
+     * Get typeOfImprovement
+     *
+     * @return \AppBundle\Entity\PermitImprovementType 
+     */
+    public function getTypeOfImprovement()
+    {
+        return $this->typeOfImprovement;
     }
 }
