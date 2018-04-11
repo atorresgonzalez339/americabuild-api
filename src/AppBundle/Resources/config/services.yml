@@ -37,3 +37,5 @@ services:
         class: AppBundle\Libs\EntityNormalizer\PermitNormalizer
  normalizer.permittype:
         class: AppBundle\Libs\EntityNormalizer\PermitTypeNormalizer
+ normalizer.permitimprovementtype:
+        class: AppBundle\Libs\EntityNormalizer\PermitImprovementTypeNormalizer
