@@ -113,6 +113,13 @@ class Permit
     private $length;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="owner_builder", type="boolean", options={"default" : false})
+     */
+    private $ownerBuilder;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PermitType", inversedBy="permits")
      * @ORM\JoinColumn(
      *     name="typeid",
@@ -458,6 +465,29 @@ class Permit
     public function getLength()
     {
         return $this->length;
+    }
+
+    /**
+     * Set ownerBuilder
+     *
+     * @param boolean $ownerBuilder
+     * @return Permit
+     */
+    public function setOwnerBuilder($ownerBuilder)
+    {
+        $this->ownerBuilder = $ownerBuilder;
+
+        return $this;
+    }
+
+    /**
+     * Get ownerBuilder
+     *
+     * @return boolean 
+     */
+    public function getOwnerBuilder()
+    {
+        return $this->ownerBuilder;
     }
 
     /**
