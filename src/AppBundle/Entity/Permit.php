@@ -94,21 +94,21 @@ class Permit
     /**
      * @var string
      *
-     * @ORM\Column(name="estimate_value", type="decimal", precision=15)
+     * @ORM\Column(name="estimate_value", type="decimal", precision=15, scale=8)
      */
     private $estimateValue;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="area ",  type="decimal", precision=15)
+     * @ORM\Column(name="area ",  type="decimal", precision=15, scale=8)
      */
     private $area;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="length ",  type="decimal",  precision=15)
+     * @ORM\Column(name="length ",  type="decimal",  precision=15, scale=8)
      */
     private $length;
 
