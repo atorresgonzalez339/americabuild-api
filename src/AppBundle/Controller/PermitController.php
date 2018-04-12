@@ -78,39 +78,46 @@ class PermitController extends BaseController
         }
 
         $repo = $this->getRepo("Permit");
+        $repoUserRT = $this->getRepo("PermitUserRelationType");
         try {
-            // permit user profile owner / tenant -information
+            // permit data
+            $permit["user"] = $user->getId();
+            $permit["type"] = $request->get("permitType");
+            $createdAt = new \DateTime("now");
+            $permit["createdAt"] = $createdAt->format('Y-m-d H:i:s');
+            $permit["updatedAt"] = $createdAt->format('Y-m-d H:i:s');
+            $permit["folioNumber"] = $request->get("folioNumber");
+            $permit["numberOfUnits"] = $request->get("numberOfUnits");
+            $permit["lot"] = $request->get("lot");
+            $permit["block"] = $request->get("block");
+            $permit["subdivision"] = $request->get("subdivision");
+            $permit["pbpg"] = $request->get("pbpg");
+            $permit["currentUseOfProperty"] = $request->get("currentUseOfProperty");
+            $permit["descriptionOfWork"] = $request->get("descriptionOfWork");
+            $permit["estimateValue"] = $request->get("estimateValue");
+            $permit["area"] = $request->get("area");
+            $permit["length"] = $request->get("length");
+            $permit["typeOfImprovement"] = $request->get("typeOfImprovement");
+            $permit['ownerBuilder'] = $request->get("ownerBuilder");
+
+            if (isset($permit["estimateValue"]) && isset($permit["area"]) && isset($permit["length"]))
+            {
+                $permit["estimateValue"] = doubleval($permit["estimateValue"]);
+                $permit["area"] = doubleval($permit["area"]);
+                $permit["length"] = doubleval($permit["length"]);
+            }
+
+            $repo->beginTransaction();
+            $permitSaved = $this->saveModel('Permit', $permit, array("Permit" => array("ValuesValidation")), false);
+            if (!$permitSaved["success"]) {
+                throw new \Exception($permitSaved["error"], 4000);
+            }
+
+            // permit user profile owner / tenant - information
             $ownerTenantUserProfile = $request->get("ownerTenantUserProfile");
             if ( !isset( $ownerTenantUserProfile ) )
             {
                 throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "ownerTenantUserProfile")), 4000);
-            }
-
-            // permit user profile contractor -information
-            $contractorUserProfile = $request->get("contractorUserProfile");
-            if ( !isset( $contractorUserProfile ) )
-            {
-                throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "contractorUserProfile")), 4000);
-            }
-
-            // permit user profile architect -information
-            $architectUserProfile = $request->get("architectUserProfile");
-            if ( !isset( $contractorUserProfile ) )
-            {
-                throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "architectUserProfile")), 4000);
-            }
-
-            // permit
-            $permit["user"] = $user->getId();
-            $permit["type"] = $request->get("permitType", 1);
-            $createdAt = new \DateTime("now");
-            $permit["createdAt"] = $createdAt->format('Y-m-d H:i:s');
-            $permit["updatedAt"] = $createdAt->format('Y-m-d H:i:s');
-
-            $repo->beginTransaction();
-            $permitSaved = $this->saveModel('Permit', $permit, array(), false);
-            if (!$permitSaved["success"]) {
-                throw new \Exception($permitSaved["error"], 4000);
             }
 
             $permitUPSaved = $this->saveModel('PermitUserProfile', $ownerTenantUserProfile, array("PermitUserProfile"=>array("ValuesValidation")), false);
@@ -122,27 +129,55 @@ class PermitController extends BaseController
             $permitUser["user"] = $user->getId();
             $permitUser["permit"] = $permitSaved['data']['id'];
             $permitUser["permitUserProfile"] = $permitUPSaved['data']['id'];
-            $permitUser["permitUserRelationType"] = 1; //Owner
+
+            $ownerType = $repoUserRT->findOneBy(array("type"=>"OWNER"));
+            if ( !$ownerType )
+            {
+                throw new \Exception($this->get('translator')->trans('validation.permittype.notfound', array("ptype" => "OWNER")), 4000);
+            }
+            $permitUser["permitUserRelationType"] = $ownerType->getId();
             $permitUserSaved = $this->saveModel('PermitUser', $permitUser, array(), false);
 
             if (!$permitUserSaved["success"]) {
                 throw new \Exception($permitUPSaved["error"], 4000);
             }
 
-            $permitUPSaved = $this->saveModel('PermitUserProfile', $contractorUserProfile, array("PermitUserProfile"=>array("ValuesValidation")), false);
-            if (!$permitUPSaved["success"]) {
-                throw new \Exception($permitUPSaved["error"], 4000);
+            // permit user profile contractor - information
+            if ( $permit['ownerBuilder'] == false  )
+            {
+                $contractorUserProfile = $request->get("contractorUserProfile");
+                if (!isset($contractorUserProfile)) {
+                    throw new \Exception($this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "contractorUserProfile")), 4000);
+                }
+
+                $permitUPSaved = $this->saveModel('PermitUserProfile', $contractorUserProfile, array("PermitUserProfile" => array("ValuesValidation")), false);
+                if (!$permitUPSaved["success"]) {
+                    throw new \Exception($permitUPSaved["error"], 4000);
+                }
+
+                // permit user for contractor
+                $permitUser["user"] = $user->getId();
+                $permitUser["permit"] = $permitSaved['data']['id'];
+                $permitUser["permitUserProfile"] = $permitUPSaved['data']['id'];
+
+                $contractorType = $repoUserRT->findOneBy(array("type"=>"CONTRACTOR"));
+                if ( !$contractorType )
+                {
+                    throw new \Exception($this->get('translator')->trans('validation.permittype.notfound', array("ptype" => "CONTRACTOR")), 4000);
+                }
+                $permitUser["permitUserRelationType"] = $contractorType->getId();
+                $permitUserSaved = $this->saveModel('PermitUser', $permitUser, array(), false);
+
+                if (!$permitUserSaved["success"]) {
+                    throw new \Exception($permitUPSaved["error"], 4000);
+                }
             }
 
-            // permit user for contractor
-            $permitUser["user"] = $user->getId();
-            $permitUser["permit"] = $permitSaved['data']['id'];
-            $permitUser["permitUserProfile"] = $permitUPSaved['data']['id'];
-            $permitUser["permitUserRelationType"] = 2; //Contractor
-            $permitUserSaved = $this->saveModel('PermitUser', $permitUser, array(), false);
-
-            if (!$permitUserSaved["success"]) {
-                throw new \Exception($permitUPSaved["error"], 4000);
+            // permit user profile architect - information
+            $architectUserProfile = $request->get("architectUserProfile");
+            if ( !isset( $architectUserProfile ) )
+            {
+                throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "architectUserProfile")), 4000);
             }
 
             $permitUPSaved = $this->saveModel('PermitUserProfile', $architectUserProfile, array("PermitUserProfile"=>array("ValuesValidation")), false);
@@ -154,7 +189,13 @@ class PermitController extends BaseController
             $permitUser["user"] = $user->getId();
             $permitUser["permit"] = $permitSaved['data']['id'];
             $permitUser["permitUserProfile"] = $permitUPSaved['data']['id'];
-            $permitUser["permitUserRelationType"] = 2; //Architect -- should be 3.
+
+            $architectType = $repoUserRT->findOneBy(array("type"=>"CONTRACTOR"/*"ARCHITECT should be in the database"*/));
+            if ( !$architectType )
+            {
+                throw new \Exception($this->get('translator')->trans('validation.permittype.notfound', array("ptype" => "ARCHITECT")), 4000);
+            }
+            $permitUser["permitUserRelationType"] = $architectType->getId();
             $permitUserSaved = $this->saveModel('PermitUser', $permitUser, array(), false);
 
             if (!$permitUserSaved["success"]) {

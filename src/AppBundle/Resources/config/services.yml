@@ -22,6 +22,8 @@ services:
         arguments: ["@service_container"]
  validator.permituserprofile:
          class: AppBundle\Libs\Validator\PermitUserProfileValidator
+ validator.permit:
+         class: AppBundle\Libs\Validator\PermitValidator
  app.request_listener:
         class: AppBundle\Listeners\RequestListener
         arguments: ["@service_container"]
