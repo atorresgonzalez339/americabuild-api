@@ -18,8 +18,8 @@ class CountryStatesNormalizer extends AbstractNormalizer {
         switch ($prototype) {
             case CustomDecorator::DEFAULT_DECORATOR:
                 $obj['id'] = $object->getId();
-                $obj['code'] = $object->getName();
-                $obj['name'] = $object->getDescription();
+                $obj['code'] = $object->getCode();
+                $obj['name'] = $object->getName();
                 break;
         }
 
