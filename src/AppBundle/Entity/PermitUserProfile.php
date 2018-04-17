@@ -75,9 +75,16 @@ class PermitUserProfile
     /**
      * @var string
      *
-     * @ORM\Column(name="driver_lic_or_id", type="string", length=255)
+     * @ORM\Column(name="driver_lic_or_id", type="string", length=255, nullable=true)
      */
     private $driverLicOrId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="license_number", type="string", length=255, nullable=true)
+     */
+    private $licenseNumber;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CountryStates", inversedBy="permitUserProfiles")
@@ -92,6 +99,7 @@ class PermitUserProfile
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitUser", mappedBy="permitUserProfile")
      */
     private $permitUsers;
+
     /**
      * Constructor
      */
@@ -292,6 +300,29 @@ class PermitUserProfile
     public function getDriverLicOrId()
     {
         return $this->driverLicOrId;
+    }
+
+    /**
+     * Set licenseNumber
+     *
+     * @param string $licenseNumber
+     * @return PermitUserProfile
+     */
+    public function setLicenseNumber($licenseNumber)
+    {
+        $this->licenseNumber = $licenseNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get licenseNumber
+     *
+     * @return string 
+     */
+    public function getLicenseNumber()
+    {
+        return $this->licenseNumber;
     }
 
     /**
