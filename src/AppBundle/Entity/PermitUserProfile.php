@@ -53,13 +53,6 @@ class PermitUserProfile
     /**
      * @var string
      *
-     * @ORM\Column(name="state", type="string", length=255)
-     */
-    private $state;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="zip", type="string", length=255)
      */
     private $zip;
@@ -85,6 +78,15 @@ class PermitUserProfile
      * @ORM\Column(name="driver_lic_or_id", type="string", length=255)
      */
     private $driverLicOrId;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CountryStates", inversedBy="permitUserProfiles")
+     * @ORM\JoinColumn(
+     *     name="stateid",
+     *     referencedColumnName="id",
+     *     nullable=false)
+     */
+    private $state;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitUser", mappedBy="permitUserProfile")
@@ -201,29 +203,6 @@ class PermitUserProfile
     }
 
     /**
-     * Set state
-     *
-     * @param string $state
-     * @return PermitUserProfile
-     */
-    public function setState($state)
-    {
-        $this->state = $state;
-
-        return $this;
-    }
-
-    /**
-     * Get state
-     *
-     * @return string 
-     */
-    public function getState()
-    {
-        return $this->state;
-    }
-
-    /**
      * Set zip
      *
      * @param string $zip
@@ -249,7 +228,7 @@ class PermitUserProfile
     /**
      * Set phoneNumber
      *
-     * @param integer $phoneNumber
+     * @param string $phoneNumber
      * @return PermitUserProfile
      */
     public function setPhoneNumber($phoneNumber)
@@ -262,7 +241,7 @@ class PermitUserProfile
     /**
      * Get phoneNumber
      *
-     * @return integer 
+     * @return string 
      */
     public function getPhoneNumber()
     {
@@ -313,6 +292,29 @@ class PermitUserProfile
     public function getDriverLicOrId()
     {
         return $this->driverLicOrId;
+    }
+
+    /**
+     * Set state
+     *
+     * @param \AppBundle\Entity\CountryStates $state
+     * @return PermitUserProfile
+     */
+    public function setState(\AppBundle\Entity\CountryStates $state)
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return \AppBundle\Entity\CountryStates 
+     */
+    public function getState()
+    {
+        return $this->state;
     }
 
     /**
