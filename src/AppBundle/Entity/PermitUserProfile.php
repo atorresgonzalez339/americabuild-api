@@ -101,6 +101,16 @@ class PermitUserProfile
     private $permitUsers;
 
     /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Location" )
+     * @ORM\JoinColumn(
+     *     name="locationid",
+     *     referencedColumnName="id",
+     *     nullable=false,
+     *     onDelete="CASCADE")
+     */
+    private $addressLocation;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -379,5 +389,28 @@ class PermitUserProfile
     public function getPermitUsers()
     {
         return $this->permitUsers;
+    }
+
+    /**
+     * Set addressLocation
+     *
+     * @param \AppBundle\Entity\Location $addressLocation
+     * @return PermitUserProfile
+     */
+    public function setAddressLocation(\AppBundle\Entity\Location $addressLocation)
+    {
+        $this->addressLocation = $addressLocation;
+
+        return $this;
+    }
+
+    /**
+     * Get addressLocation
+     *
+     * @return \AppBundle\Entity\Location 
+     */
+    public function getAddressLocation()
+    {
+        return $this->addressLocation;
     }
 }
