@@ -119,8 +119,8 @@ class PermitController extends BaseController
             {
                 throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "ownerTenantUserProfile")), 4000);
             }
-
-            $permitUPSaved = $this->saveModel('PermitUserProfile', $ownerTenantUserProfile, array("PermitUserProfile"=>array("ValuesValidation")), false);
+            unset($ownerTenantUserProfile['licenseNumber']);
+            $permitUPSaved = $this->saveModel('PermitUserProfile', $ownerTenantUserProfile, array("PermitUserProfile"=>array("owner-tenant")), false);
             if (!$permitUPSaved["success"]) {
                 throw new \Exception($permitUPSaved["error"], 4000);
             }
@@ -150,7 +150,8 @@ class PermitController extends BaseController
                     throw new \Exception($this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "contractorUserProfile")), 4000);
                 }
 
-                $permitUPSaved = $this->saveModel('PermitUserProfile', $contractorUserProfile, array("PermitUserProfile" => array("ValuesValidation")), false);
+                unset($contractorUserProfile['driverLicOrId']);
+                $permitUPSaved = $this->saveModel('PermitUserProfile', $contractorUserProfile, array("PermitUserProfile" => array("contractor")), false);
                 if (!$permitUPSaved["success"]) {
                     throw new \Exception($permitUPSaved["error"], 4000);
                 }
@@ -180,7 +181,8 @@ class PermitController extends BaseController
                 throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "architectUserProfile")), 4000);
             }
 
-            $permitUPSaved = $this->saveModel('PermitUserProfile', $architectUserProfile, array("PermitUserProfile"=>array("ValuesValidation")), false);
+            unset($architectUserProfile['licenseNumber']);
+            $permitUPSaved = $this->saveModel('PermitUserProfile', $architectUserProfile, array("PermitUserProfile"=>array("architect")), false);
             if (!$permitUPSaved["success"]) {
                 throw new \Exception($permitUPSaved["error"], 4000);
             }

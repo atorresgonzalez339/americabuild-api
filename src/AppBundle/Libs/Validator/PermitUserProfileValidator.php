@@ -15,7 +15,15 @@ class PermitUserProfileValidator extends AbstractValidator {
 
     public function validate(array $data, $objectPersist, $validationType)
     {
-        $parameters = array("name","email","address1", "address2", "city", "state", "zip", "phoneNumber", "driverLicOrId");
+        if ( $validationType == 'contractor' )
+        {
+            $parameters = array("name","email","address1", "address2", "city", "state", "zip", "phoneNumber", "licenseNumber");
+        }
+        else
+        {
+            $parameters = array("name","email","address1", "address2", "city", "state", "zip", "phoneNumber", "driverLicOrId");
+        }
+
         foreach ( $parameters as $parameter)
         {
             if ( !isset($data[$parameter]) || empty($data[$parameter]))
@@ -32,6 +40,13 @@ class PermitUserProfileValidator extends AbstractValidator {
         if ( !preg_match("/^[0-9]{10}$/",$data['phoneNumber']))
         {
             return $this->getTranslator()->trans('validation.phonenumber.invalid');
+        }
+
+        $repoCountryStates = $this->container->get('doctrine')->getRepository('AppBundle:CountryStates');
+        $state = $repoCountryStates->find($data['state']);
+        if (!$state)
+        {
+            return $this->getTranslator()->trans('validation.object.notfound', array("element"=>"state"));
         }
     }
 
