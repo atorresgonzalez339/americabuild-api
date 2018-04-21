@@ -119,7 +119,25 @@ class PermitController extends BaseController
             {
                 throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "ownerTenantUserProfile")), 4000);
             }
+
+            if ( !isset( $ownerTenantUserProfile['addressLocation'] ) )
+            {
+                throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "addressLocation")), 4000);
+            }
+            $ownerLocation = $ownerTenantUserProfile['addressLocation'];
+            if (isset($ownerLocation["latitude"]) && isset($ownerLocation["longitude"]) && isset($ownerLocation["zoom"]))
+            {
+                $ownerLocation["latitude"] = doubleval($ownerLocation["latitude"]);
+                $ownerLocation["longitude"] = doubleval($ownerLocation["longitude"]);
+                $ownerLocation["zoom"] = doubleval($ownerLocation["zoom"]);
+            }
+            $locationSaved = $this->saveModel('Location', $ownerLocation, array("Location"=>array("Validation")), false);
+            if (!$locationSaved["success"]) {
+                throw new \Exception($locationSaved["error"], 4000);
+            }
+
             unset($ownerTenantUserProfile['licenseNumber']);
+            $ownerTenantUserProfile['addressLocation'] = $locationSaved['data']['id'];
             $permitUPSaved = $this->saveModel('PermitUserProfile', $ownerTenantUserProfile, array("PermitUserProfile"=>array("owner-tenant")), false);
             if (!$permitUPSaved["success"]) {
                 throw new \Exception($permitUPSaved["error"], 4000);
@@ -150,6 +168,23 @@ class PermitController extends BaseController
                     throw new \Exception($this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "contractorUserProfile")), 4000);
                 }
 
+                if ( !isset( $contractorUserProfile['addressLocation'] ) )
+                {
+                    throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "addressLocation")), 4000);
+                }
+                $contractorLocation = $contractorUserProfile['addressLocation'];
+                if (isset($contractorLocation["latitude"]) && isset($contractorLocation["longitude"]) && isset($contractorLocation["zoom"]))
+                {
+                    $contractorLocation["latitude"] = doubleval($contractorLocation["latitude"]);
+                    $contractorLocation["longitude"] = doubleval($contractorLocation["longitude"]);
+                    $contractorLocation["zoom"] = doubleval($contractorLocation["zoom"]);
+                }
+                $locationSaved = $this->saveModel('Location', $contractorLocation, array("Location"=>array("Validation")), false);
+                if (!$locationSaved["success"]) {
+                    throw new \Exception($locationSaved["error"], 4000);
+                }
+
+                $contractorUserProfile['addressLocation'] = $locationSaved['data']['id'];
                 unset($contractorUserProfile['driverLicOrId']);
                 $permitUPSaved = $this->saveModel('PermitUserProfile', $contractorUserProfile, array("PermitUserProfile" => array("contractor")), false);
                 if (!$permitUPSaved["success"]) {
@@ -181,6 +216,23 @@ class PermitController extends BaseController
                 throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "architectUserProfile")), 4000);
             }
 
+            if ( !isset( $architectUserProfile['addressLocation'] ) )
+            {
+                throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "addressLocation")), 4000);
+            }
+            $architectLocation = $architectUserProfile['addressLocation'];
+            if (isset($architectLocation["latitude"]) && isset($architectLocation["longitude"]) && isset($architectLocation["zoom"]))
+            {
+                $architectLocation["latitude"] = doubleval($architectLocation["latitude"]);
+                $architectLocation["longitude"] = doubleval($architectLocation["longitude"]);
+                $architectLocation["zoom"] = doubleval($architectLocation["zoom"]);
+            }
+            $locationSaved = $this->saveModel('Location', $architectLocation, array("Location"=>array("Validation")), false);
+            if (!$locationSaved["success"]) {
+                throw new \Exception($locationSaved["error"], 4000);
+            }
+
+            $architectUserProfile['addressLocation'] = $locationSaved['data']['id'];
             unset($architectUserProfile['licenseNumber']);
             $permitUPSaved = $this->saveModel('PermitUserProfile', $architectUserProfile, array("PermitUserProfile"=>array("architect")), false);
             if (!$permitUPSaved["success"]) {
