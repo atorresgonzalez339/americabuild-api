@@ -233,7 +233,7 @@ class PermitController extends BaseController
             }
 
             $architectUserProfile['addressLocation'] = $locationSaved['data']['id'];
-            unset($architectUserProfile['licenseNumber']);
+            unset($architectUserProfile['driverLicOrId']);
             $permitUPSaved = $this->saveModel('PermitUserProfile', $architectUserProfile, array("PermitUserProfile"=>array("architect")), false);
             if (!$permitUPSaved["success"]) {
                 throw new \Exception($permitUPSaved["error"], 4000);

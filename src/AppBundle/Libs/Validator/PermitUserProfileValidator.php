@@ -15,7 +15,7 @@ class PermitUserProfileValidator extends AbstractValidator {
 
     public function validate(array $data, $objectPersist, $validationType)
     {
-        if ( $validationType == 'contractor' )
+        if ( $validationType != 'owner-tenant' )
         {
             $parameters = array("name","email","address1", "address2", "city", "state", "zip", "phoneNumber", "licenseNumber");
         }
