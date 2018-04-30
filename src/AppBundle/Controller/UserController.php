@@ -168,4 +168,23 @@ class UserController extends BaseController
         $save = $this->saveModel('User', $data);
         return new View($save, Response::HTTP_OK);
     }
+
+    /**
+     * Return the overall UserType list. This service is used for anonymous users.
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Return the overall UserType List",
+     *   statusCodes = {
+     *     200 = "Returned when successful"
+     *   }
+     * )
+     * @Rest\Get("/api/users/usertypes")
+     * @Method({"GET"})
+     *
+     */
+    public function getUserTypesAction()
+    {
+        return new View($this->getAllDataOfModel('UserType'), Response::HTTP_OK);
+    }
 }

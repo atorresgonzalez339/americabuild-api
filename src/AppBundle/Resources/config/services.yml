@@ -45,3 +45,5 @@ services:
         class: AppBundle\Libs\EntityNormalizer\PermitImprovementTypeNormalizer
  normalizer.countrystates:
         class: AppBundle\Libs\EntityNormalizer\CountryStatesNormalizer
+ normalizer.usertype:
+        class: AppBundle\Libs\EntityNormalizer\UserTypeNormalizer
