@@ -87,6 +87,16 @@ class User implements UserInterface {
     private $role;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserType", inversedBy="users")
+     * @ORM\JoinColumn(
+     *     name="idusertype",
+     *     referencedColumnName="id",
+     *     nullable=true
+     * )
+     */
+    private $userType;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Company", inversedBy="users")
      * @ORM\JoinColumn(
      *     name="companyid",
@@ -394,5 +404,28 @@ class User implements UserInterface {
     public function getPermitUsers()
     {
         return $this->permitUsers;
+    }
+
+    /**
+     * Set userType
+     *
+     * @param \AppBundle\Entity\UserType $userType
+     * @return User
+     */
+    public function setUserType(\AppBundle\Entity\UserType $userType = null)
+    {
+        $this->userType = $userType;
+
+        return $this;
+    }
+
+    /**
+     * Get userType
+     *
+     * @return \AppBundle\Entity\UserType 
+     */
+    public function getUserType()
+    {
+        return $this->userType;
     }
 }

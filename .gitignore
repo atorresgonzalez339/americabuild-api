@@ -42,3 +42,4 @@
 /vendor/
 vendor/composer/ClassLoader.php
 vendor/composer/LICENSE
+/nbproject/private/
