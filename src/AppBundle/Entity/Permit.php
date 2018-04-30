@@ -120,6 +120,13 @@ class Permit
     private $ownerBuilder;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="gallons", type="string", length=255)
+     */
+    private $gallons;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PermitType", inversedBy="permits")
      * @ORM\JoinColumn(
      *     name="typeid",
@@ -590,5 +597,28 @@ class Permit
     public function getTypeOfImprovement()
     {
         return $this->typeOfImprovement;
+    }
+
+    /**
+     * Set gallons
+     *
+     * @param string $gallons
+     * @return Permit
+     */
+    public function setGallons($gallons)
+    {
+        $this->gallons = $gallons;
+
+        return $this;
+    }
+
+    /**
+     * Get gallons
+     *
+     * @return string 
+     */
+    public function getGallons()
+    {
+        return $this->gallons;
     }
 }

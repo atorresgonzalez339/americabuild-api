@@ -37,6 +37,7 @@ class PermitNormalizer extends AbstractNormalizer implements \Symfony\Component\
                 $obj['estimateValue'] = $object->getEstimateValue();
                 $obj['area'] = $object->getArea();
                 $obj['length'] = $object->getLength();
+                $obj['gallons'] = $object->getGallons();
                 $obj['ownerBuilder'] = $object->getOwnerBuilder();
                 $obj['user'] = $normalice->normalize('normalizer.user', $object->getUser(), CustomDecorator::SIMPLE);
                 $obj['type'] = $normalice->normalize('normalizer.permittype', $object->getType(), CustomDecorator::DEFAULT_DECORATOR);

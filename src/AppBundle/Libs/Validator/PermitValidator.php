@@ -15,7 +15,7 @@ class PermitValidator extends AbstractValidator {
 
     public function validate(array $data, $objectPersist, $validationType)
     {
-        $parameters = array("type","folioNumber", "numberOfUnits", "lot", "block", "subdivision", "pbpg", "currentUseOfProperty", "descriptionOfWork", "estimateValue", "area", "length", "typeOfImprovement");
+        $parameters = array("type","folioNumber", "numberOfUnits", "lot", "block", "subdivision", "pbpg", "currentUseOfProperty", "descriptionOfWork", "estimateValue", "area", "length", "typeOfImprovement", "gallons");
         foreach ( $parameters as $parameter)
         {
             if ( !isset($data[$parameter]) || empty($data[$parameter]))

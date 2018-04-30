@@ -97,6 +97,7 @@ class PermitController extends BaseController
             $permit["estimateValue"] = $request->get("estimateValue");
             $permit["area"] = $request->get("area");
             $permit["length"] = $request->get("length");
+            $permit['gallons'] = $request->get("gallons");
             $permit["typeOfImprovement"] = $request->get("typeOfImprovement");
             $permit['ownerBuilder'] = $request->get("ownerBuilder");
 
