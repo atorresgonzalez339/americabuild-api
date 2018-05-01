@@ -26,8 +26,10 @@ class UserNormalizer extends AbstractNormalizer implements \Symfony\Component\De
                 $obj['id'] = $object->getId();
                 $obj['username'] = $object->getUsername();
                 $obj['fullname'] = $object->getFullName();
+                $obj['address'] = $object->getAddress();
+                $obj['phone'] = $object->getPhoneNumber();
                 $obj['role'] = $normalice->normalize('normalizer.role', $object->getRole(), CustomDecorator::DEFAULT_DECORATOR);
-                $obj['company'] = $normalice->normalize('normalizer.company', $object->getCompany(), CustomDecorator::DEFAULT_DECORATOR);
+                $obj['userType'] = $object->getUserType() != null ? $normalice->normalize('normalizer.usertype', $object->getUserType(), CustomDecorator::DEFAULT_DECORATOR) : null;
                 break;
             case CustomDecorator::SIMPLE:
                 $obj['id'] = $object->getId();

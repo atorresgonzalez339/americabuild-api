@@ -79,6 +79,8 @@ class UserController extends BaseController
         $data["username"] = $request->get("username");
         $data["password"] = $request->get("password");
         $data["fullname"] = $request->get("fullname");
+        $data["address"] = $request->get("address");
+        $data["phoneNumber"] = $request->get("phoneNumber");
         $repassword = $request->get("repassword");
 
         if ( filter_var( $data["username"], FILTER_VALIDATE_EMAIL) == false )
@@ -89,6 +91,16 @@ class UserController extends BaseController
         if ( $data['password'] != $repassword )
         {
             return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.password.notmatch')), Response::HTTP_OK);
+        }
+
+        if (!isset($data["address"]) || empty($data["address"]))
+        {
+            return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.parameters.requiered', array("paramname"=>"address"))), Response::HTTP_OK);
+        }
+
+        if (!isset($data["phoneNumber"]) || empty($data["phoneNumber"]))
+        {
+            return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.parameters.requiered', array("paramname"=>"phoneNumber"))), Response::HTTP_OK);
         }
 
         $data["userType"] = $request->get("userType");
