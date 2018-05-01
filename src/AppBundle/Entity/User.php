@@ -77,6 +77,20 @@ class User implements UserInterface {
     private $token;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="phone_number", type="string", length=10, nullable=true)
+     */
+    private $phoneNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="address", type="string", length=255, nullable=true)
+     */
+    private $address;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Role", inversedBy="users")
      * @ORM\JoinColumn(
      *     name="idrole",
@@ -427,5 +441,51 @@ class User implements UserInterface {
     public function getUserType()
     {
         return $this->userType;
+    }
+
+    /**
+     * Set phoneNumber
+     *
+     * @param string $phoneNumber
+     * @return User
+     */
+    public function setPhoneNumber($phoneNumber)
+    {
+        $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get phoneNumber
+     *
+     * @return string 
+     */
+    public function getPhoneNumber()
+    {
+        return $this->phoneNumber;
+    }
+
+    /**
+     * Set address
+     *
+     * @param string $address
+     * @return User
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return string 
+     */
+    public function getAddress()
+    {
+        return $this->address;
     }
 }
