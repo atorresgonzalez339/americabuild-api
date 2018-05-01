@@ -90,6 +90,20 @@ class UserController extends BaseController
         {
             return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.password.notmatch')), Response::HTTP_OK);
         }
+
+        $data["userType"] = $request->get("userType");
+        if (!isset($data["userType"]) || empty($data["userType"]))
+        {
+            return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.parameters.requiered', array("paramname"=>"userType"))), Response::HTTP_OK);
+        }
+        else
+        {
+            $userType = $this->getRepo("UserType")->find($data["userType"]);
+            if (!$userType) {
+                return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.object.notfound', array("element"=>"user type"))), Response::HTTP_OK);
+            }
+        }
+
         $data["role"] = 2; //AUTHENTICATED_USER
         $data["active"] = false;
         $data["company"] = 1; // Default Company
