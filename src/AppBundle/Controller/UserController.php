@@ -81,6 +81,7 @@ class UserController extends BaseController
         $data["fullname"] = $request->get("fullname");
         $data["address"] = $request->get("address");
         $data["phoneNumber"] = $request->get("phoneNumber");
+        $data["licenseNumber"] = $request->get("licenseNumber");
         $repassword = $request->get("repassword");
 
         if ( filter_var( $data["username"], FILTER_VALIDATE_EMAIL) == false )
@@ -113,6 +114,18 @@ class UserController extends BaseController
             $userType = $this->getRepo("UserType")->find($data["userType"]);
             if (!$userType) {
                 return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.object.notfound', array("element"=>"user type"))), Response::HTTP_OK);
+            }
+
+            if ( $userType->getType() == "CONTRACTOR" || $userType->getType() == "ARCHITECT" )
+            {
+                if (!isset($data["licenseNumber"]) || empty($data["licenseNumber"]))
+                {
+                    return new View(array('success' => false, 'error' => $this->get('translator')->trans('validation.parameters.requiered', array("paramname"=>"licenseNumber"))), Response::HTTP_OK);
+                }
+            }
+            else
+            {
+                unset($data["licenseNumber"]);
             }
         }
 

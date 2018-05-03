@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="tbuser")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @UniqueEntity(fields={"username"}, message="A user with the same email already exist")
+ * @UniqueEntity(fields={"licenseNumber"}, message="A user with the same license number already exist")
  */
 class User implements UserInterface {
 
@@ -89,6 +90,13 @@ class User implements UserInterface {
      * @ORM\Column(name="address", type="string", length=255, nullable=true)
      */
     private $address;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="license_number", type="string", length=255, unique=true, nullable=true)
+     */
+    private $licenseNumber;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Role", inversedBy="users")
@@ -487,5 +495,28 @@ class User implements UserInterface {
     public function getAddress()
     {
         return $this->address;
+    }
+
+    /**
+     * Set licenseNumber
+     *
+     * @param string $licenseNumber
+     * @return User
+     */
+    public function setLicenseNumber($licenseNumber)
+    {
+        $this->licenseNumber = $licenseNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get licenseNumber
+     *
+     * @return string 
+     */
+    public function getLicenseNumber()
+    {
+        return $this->licenseNumber;
     }
 }
