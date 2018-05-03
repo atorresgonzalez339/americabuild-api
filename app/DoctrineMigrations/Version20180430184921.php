@@ -43,6 +43,6 @@ class Version20180430184921 extends AbstractMigration
             'INSERT INTO tbuser_type (name,description,type)
                     values (\'Owner / Tenant\',\'Owner / Tenant\',\'OWNER_TENANT\'),
                            (\'Contractor\',\'Contractor\',\'CONTRACTOR\'),
-                           (\' Architect\',\' Architect\',\' ARCHITECT\')');
+                           (\'Architect\',\'Architect\',\'ARCHITECT\')');
     }
 }
