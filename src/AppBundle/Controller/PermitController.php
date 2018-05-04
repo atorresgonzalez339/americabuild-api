@@ -114,18 +114,18 @@ class PermitController extends BaseController
                 throw new \Exception($permitSaved["error"], 4000);
             }
 
-            // permit user profile owner / tenant - information
-            $ownerTenantUserProfile = $request->get("ownerTenantUserProfile");
-            if ( !isset( $ownerTenantUserProfile ) )
+            // permit user profile owner information
+            $ownerUserProfile = $request->get("ownerUserProfile");
+            if ( !isset( $ownerUserProfile ) )
             {
-                throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "ownerTenantUserProfile")), 4000);
+                throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "ownerUserProfile")), 4000);
             }
 
-            if ( !isset( $ownerTenantUserProfile['addressLocation'] ) )
+            if ( !isset( $ownerUserProfile['addressLocation'] ) )
             {
                 throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "addressLocation")), 4000);
             }
-            $ownerLocation = $ownerTenantUserProfile['addressLocation'];
+            $ownerLocation = $ownerUserProfile['addressLocation'];
             if (isset($ownerLocation["latitude"]) && isset($ownerLocation["longitude"]) && isset($ownerLocation["zoom"]))
             {
                 $ownerLocation["latitude"] = doubleval($ownerLocation["latitude"]);
@@ -137,19 +137,66 @@ class PermitController extends BaseController
                 throw new \Exception($locationSaved["error"], 4000);
             }
 
-            unset($ownerTenantUserProfile['licenseNumber']);
-            $ownerTenantUserProfile['addressLocation'] = $locationSaved['data']['id'];
-            $permitUPSaved = $this->saveModel('PermitUserProfile', $ownerTenantUserProfile, array("PermitUserProfile"=>array("owner-tenant")), false);
+            unset($ownerUserProfile['licenseNumber']);
+            $ownerUserProfile['addressLocation'] = $locationSaved['data']['id'];
+            $permitUPSaved = $this->saveModel('PermitUserProfile', $ownerUserProfile, array("PermitUserProfile"=>array("owner-tenant")), false);
             if (!$permitUPSaved["success"]) {
                 throw new \Exception($permitUPSaved["error"], 4000);
             }
 
-            // permit user for owner / tenant
+            // permit user for owner
             $permitUser["user"] = $user->getId();
             $permitUser["permit"] = $permitSaved['data']['id'];
             $permitUser["permitUserProfile"] = $permitUPSaved['data']['id'];
 
             $ownerType = $repoUserRT->findOneBy(array("type"=>"OWNER"));
+            if ( !$ownerType )
+            {
+                throw new \Exception($this->get('translator')->trans('validation.permittype.notfound', array("ptype" => "OWNER")), 4000);
+            }
+            $permitUser["permitUserRelationType"] = $ownerType->getId();
+            $permitUserSaved = $this->saveModel('PermitUser', $permitUser, array(), false);
+
+            if (!$permitUserSaved["success"]) {
+                throw new \Exception($permitUPSaved["error"], 4000);
+            }
+
+            // permit user profile tenant information
+            $tenantUserProfile = $request->get("tenantUserProfile");
+            if ( !isset( $tenantUserProfile ) )
+            {
+                throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "tenantUserProfile")), 4000);
+            }
+
+            if ( !isset( $tenantUserProfile['addressLocation'] ) )
+            {
+                throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "addressLocation")), 4000);
+            }
+            $tenantLocation = $tenantUserProfile['addressLocation'];
+            if (isset($tenantLocation["latitude"]) && isset($tenantLocation["longitude"]) && isset($tenantLocation["zoom"]))
+            {
+                $tenantLocation["latitude"] = doubleval($tenantLocation["latitude"]);
+                $tenantLocation["longitude"] = doubleval($tenantLocation["longitude"]);
+                $tenantLocation["zoom"] = doubleval($tenantLocation["zoom"]);
+            }
+            $locationSaved = $this->saveModel('Location', $tenantLocation, array("Location"=>array("Validation")), false);
+            if (!$locationSaved["success"]) {
+                throw new \Exception($locationSaved["error"], 4000);
+            }
+
+            unset($tenantUserProfile['licenseNumber']);
+            $tenantUserProfile['addressLocation'] = $locationSaved['data']['id'];
+            $permitUPSaved = $this->saveModel('PermitUserProfile', $tenantUserProfile, array("PermitUserProfile"=>array("owner-tenant")), false);
+            if (!$permitUPSaved["success"]) {
+                throw new \Exception($permitUPSaved["error"], 4000);
+            }
+
+            // permit user for tenant
+            $permitUser["user"] = $user->getId();
+            $permitUser["permit"] = $permitSaved['data']['id'];
+            $permitUser["permitUserProfile"] = $permitUPSaved['data']['id'];
+
+            $ownerType = $repoUserRT->findOneBy(array("type"=>"OWNER")); //must be tenant
             if ( !$ownerType )
             {
                 throw new \Exception($this->get('translator')->trans('validation.permittype.notfound', array("ptype" => "OWNER")), 4000);
