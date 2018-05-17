@@ -48,6 +48,11 @@ class PermitType
     private $permits;
 
     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\FeesItem", mappedBy="permitType")
+     */
+    private $feesItems;
+
+    /**
      * Get id
      *
      * @return integer 
@@ -125,13 +130,6 @@ class PermitType
     {
         return $this->type;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->permits = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
     /**
      * Add permits
@@ -164,5 +162,46 @@ class PermitType
     public function getPermits()
     {
         return $this->permits;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->permits = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->feesItems = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add feesItems
+     *
+     * @param \AppBundle\Entity\FeesItem $feesItems
+     * @return PermitType
+     */
+    public function addFeesItem(\AppBundle\Entity\FeesItem $feesItems)
+    {
+        $this->feesItems[] = $feesItems;
+
+        return $this;
+    }
+
+    /**
+     * Remove feesItems
+     *
+     * @param \AppBundle\Entity\FeesItem $feesItems
+     */
+    public function removeFeesItem(\AppBundle\Entity\FeesItem $feesItems)
+    {
+        $this->feesItems->removeElement($feesItems);
+    }
+
+    /**
+     * Get feesItems
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFeesItems()
+    {
+        return $this->feesItems;
     }
 }
