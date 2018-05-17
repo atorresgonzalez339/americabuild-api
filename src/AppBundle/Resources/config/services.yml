@@ -49,3 +49,5 @@ services:
         class: AppBundle\Libs\EntityNormalizer\UserTypeNormalizer
  normalizer.feesitem:
         class: AppBundle\Libs\EntityNormalizer\FeesItemNormalizer
+ normalizer.companyfees:
+        class: AppBundle\Libs\EntityNormalizer\CompanyFeesNormalizer

@@ -26,3 +26,4 @@ validation.parameters.requiered: There are null values. Parameter 'paramname' is
 validation.phonenumber.invalid: The provided phone number is not valid.
 validation.object.notfound: The provided element does not exists.
 validation.permittype.notfound: There is not permit type ptype in the database.
+validation.parameter.invalidtype: The type of the parameter 'paramname' is invalid. Expected type: ptype.
