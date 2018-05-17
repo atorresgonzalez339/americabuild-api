@@ -47,3 +47,5 @@ services:
         class: AppBundle\Libs\EntityNormalizer\CountryStatesNormalizer
  normalizer.usertype:
         class: AppBundle\Libs\EntityNormalizer\UserTypeNormalizer
+ normalizer.feesitem:
+        class: AppBundle\Libs\EntityNormalizer\FeesItemNormalizer
