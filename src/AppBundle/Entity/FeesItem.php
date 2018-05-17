@@ -38,6 +38,19 @@ class FeesItem
     private $permitType;
 
     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\CompanyFees", mappedBy="feesItem")
+     */
+    private $companyFees;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->companyFees = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
      * Get id
      *
      * @return integer 
@@ -91,5 +104,38 @@ class FeesItem
     public function getPermitType()
     {
         return $this->permitType;
+    }
+
+    /**
+     * Add companyFees
+     *
+     * @param \AppBundle\Entity\CompanyFees $companyFees
+     * @return FeesItem
+     */
+    public function addCompanyFee(\AppBundle\Entity\CompanyFees $companyFees)
+    {
+        $this->companyFees[] = $companyFees;
+
+        return $this;
+    }
+
+    /**
+     * Remove companyFees
+     *
+     * @param \AppBundle\Entity\CompanyFees $companyFees
+     */
+    public function removeCompanyFee(\AppBundle\Entity\CompanyFees $companyFees)
+    {
+        $this->companyFees->removeElement($companyFees);
+    }
+
+    /**
+     * Get companyFees
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCompanyFees()
+    {
+        return $this->companyFees;
     }
 }

@@ -34,29 +34,23 @@ class Company
     private $users;
 
     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\CompanyFees", mappedBy="company")
+     */
+    private $companyFees;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->user = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Set id
-     *
-     * @param integer $id
-     * @return Company
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-        return $this;
+        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->companyFees = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
@@ -66,19 +60,20 @@ class Company
     /**
      * Set companyName
      *
-     * @param String $companyName
+     * @param string $companyName
      * @return Company
      */
     public function setCompanyName($companyName)
     {
         $this->companyName = $companyName;
+
         return $this;
     }
 
     /**
      * Get companyName
      *
-     * @return String
+     * @return string 
      */
     public function getCompanyName()
     {
@@ -86,35 +81,26 @@ class Company
     }
 
     /**
-     * Set domain
+     * Set subdomain
      *
-     * @param String $subdomain
+     * @param string $subdomain
      * @return Company
      */
-    public function setSubDomain($subdomain)
+    public function setSubdomain($subdomain)
     {
         $this->subdomain = $subdomain;
+
         return $this;
     }
 
     /**
-     * Get domain
+     * Get subdomain
      *
-     * @return String
+     * @return string 
      */
-    public function getSubDomain()
+    public function getSubdomain()
     {
         return $this->subdomain;
-    }
-
-    /**
-     * Get users
-     *
-     * @return \AppBundle\Entity\Company
-     */
-    public function getUsers()
-    {
-        return $this->users;
     }
 
     /**
@@ -126,17 +112,60 @@ class Company
     public function addUser(\AppBundle\Entity\User $users)
     {
         $this->users[] = $users;
+
         return $this;
     }
 
     /**
-     * Remove user
+     * Remove users
      *
      * @param \AppBundle\Entity\User $users
      */
     public function removeUser(\AppBundle\Entity\User $users)
     {
-        $this->user->removeElement($users);
+        $this->users->removeElement($users);
     }
 
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * Add companyFees
+     *
+     * @param \AppBundle\Entity\CompanyFees $companyFees
+     * @return Company
+     */
+    public function addCompanyFee(\AppBundle\Entity\CompanyFees $companyFees)
+    {
+        $this->companyFees[] = $companyFees;
+
+        return $this;
+    }
+
+    /**
+     * Remove companyFees
+     *
+     * @param \AppBundle\Entity\CompanyFees $companyFees
+     */
+    public function removeCompanyFee(\AppBundle\Entity\CompanyFees $companyFees)
+    {
+        $this->companyFees->removeElement($companyFees);
+    }
+
+    /**
+     * Get companyFees
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCompanyFees()
+    {
+        return $this->companyFees;
+    }
 }
