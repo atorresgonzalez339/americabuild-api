@@ -31,11 +31,18 @@ class CompanyFeesController extends BaseController
      * )
      * @Rest\Get("/api/companyfees")
      * @Method({"GET"})
-     *
+     * @Secure(roles="ROLE_ADMINISTRATOR")
      */
     public function getAllAction()
     {
-        return new View($this->getAllDataOfModel('CompanyFees'), Response::HTTP_OK);
+        $user = $this->getUserOfCurrentRequest();
+        if (!$user)
+        {
+            return $this->returnSecurityViolationResponse();
+        }
+        $repo = $this->getRepo("CompanyFees");
+        $result = $repo->findBy(array("company"=>$user->getCompany()));
+        return new View($this->normalizeResult("CompanyFees", $result ), Response::HTTP_OK);
     }
 
     /**
@@ -50,7 +57,7 @@ class CompanyFeesController extends BaseController
      * )
      * @Rest\Get("/api/companyfees/{id}")
      * @Method({"GET"})
-     *
+     * @Secure(roles="ROLE_ADMINISTRATOR")
      */
     public function getByIdAction($id)
     {
@@ -68,6 +75,7 @@ class CompanyFeesController extends BaseController
      * )
      * @Rest\Post("/api/companyfees")
      * @Method({"POST"})
+     * @Secure(roles="ROLE_ADMINISTRATOR")
      */
     public function postAction(Request $request)
     {
@@ -125,6 +133,7 @@ class CompanyFeesController extends BaseController
      * )
      * @Rest\Put("/api/companyfees")
      * @Method({"PUT"})
+     * @Secure(roles="ROLE_ADMINISTRATOR")
      */
     public function putAction(Request $request)
     {
@@ -183,6 +192,7 @@ class CompanyFeesController extends BaseController
     /**
      * @Rest\Delete("/api/companyfees/{id}")
      * @Method({"DELETE"})
+     * @Secure(roles="ROLE_ADMINISTRATOR")
      */
     public function deleteAction($id)
     {

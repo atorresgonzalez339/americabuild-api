@@ -6,6 +6,8 @@ security:
     providers:
         in_memory:
             memory: ~
+        user_db:
+            entity: { class: AppBundle\Entity\User, property: username }
     encoders:
           AppBundle\Entity\User:
              algorithm: sha512

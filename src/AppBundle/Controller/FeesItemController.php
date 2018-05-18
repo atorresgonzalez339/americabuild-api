@@ -31,7 +31,7 @@ class FeesItemController extends BaseController
      * )
      * @Rest\Get("/api/feesitem")
      * @Method({"GET"})
-     *
+     * @Secure(roles="ROLE_ADMINISTRATOR")
      */
     public function getAllAction()
     {
@@ -50,7 +50,7 @@ class FeesItemController extends BaseController
      * )
      * @Rest\Get("/api/feesitem/{id}")
      * @Method({"GET"})
-     *
+     * @Secure(roles="ROLE_ADMINISTRATOR")
      */
     public function getByIdAction($id)
     {
@@ -68,6 +68,7 @@ class FeesItemController extends BaseController
      * )
      * @Rest\Post("/api/feesitem")
      * @Method({"POST"})
+     * @Secure(roles="ROLE_ADMINISTRATOR")
      */
     public function postAction(Request $request)
     {
@@ -106,6 +107,7 @@ class FeesItemController extends BaseController
      * )
      * @Rest\Put("/api/feesitem")
      * @Method({"PUT"})
+     * @Secure(roles="ROLE_ADMINISTRATOR")
      */
     public function putAction(Request $request)
     {
@@ -139,6 +141,7 @@ class FeesItemController extends BaseController
     /**
      * @Rest\Delete("/api/feesitem/{id}")
      * @Method({"DELETE"})
+     * @Secure(roles="ROLE_ADMINISTRATOR")
      */
     public function deleteAction($id)
     {

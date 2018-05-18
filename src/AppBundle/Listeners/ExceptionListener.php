@@ -23,7 +23,7 @@ class ExceptionListener {
     public function onKernelException(GetResponseForExceptionEvent $event) {
         $exception = $event->getException();
         if ($exception instanceof AccessDeniedException) {
-            $response=new JsonResponse(array('success'=>false,'error'=>'You have not permission to execute this action'));
+            $response=new JsonResponse(array('success'=>false,'error'=>'You have not permission to execute this action', "code"=>403));
             $response->headers->set('X-Status-Code',200);
             $event->setResponse($response);
             $event->stopPropagation();
