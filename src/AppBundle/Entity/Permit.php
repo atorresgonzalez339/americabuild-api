@@ -150,6 +150,11 @@ class Permit
     private $permitUsers;
 
     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitFees", mappedBy="permit")
+     */
+    private $permitFees;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PermitImprovementType", inversedBy="permits")
      * @ORM\JoinColumn(
      *     name="improvementid",
@@ -163,6 +168,7 @@ class Permit
     public function __construct()
     {
         $this->permitUsers = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->permitFees = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -498,6 +504,29 @@ class Permit
     }
 
     /**
+     * Set gallons
+     *
+     * @param string $gallons
+     * @return Permit
+     */
+    public function setGallons($gallons)
+    {
+        $this->gallons = $gallons;
+
+        return $this;
+    }
+
+    /**
+     * Get gallons
+     *
+     * @return string 
+     */
+    public function getGallons()
+    {
+        return $this->gallons;
+    }
+
+    /**
      * Set type
      *
      * @param \AppBundle\Entity\PermitType $type
@@ -577,6 +606,39 @@ class Permit
     }
 
     /**
+     * Add permitFees
+     *
+     * @param \AppBundle\Entity\PermitFees $permitFees
+     * @return Permit
+     */
+    public function addPermitFee(\AppBundle\Entity\PermitFees $permitFees)
+    {
+        $this->permitFees[] = $permitFees;
+
+        return $this;
+    }
+
+    /**
+     * Remove permitFees
+     *
+     * @param \AppBundle\Entity\PermitFees $permitFees
+     */
+    public function removePermitFee(\AppBundle\Entity\PermitFees $permitFees)
+    {
+        $this->permitFees->removeElement($permitFees);
+    }
+
+    /**
+     * Get permitFees
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPermitFees()
+    {
+        return $this->permitFees;
+    }
+
+    /**
      * Set typeOfImprovement
      *
      * @param \AppBundle\Entity\PermitImprovementType $typeOfImprovement
@@ -597,28 +659,5 @@ class Permit
     public function getTypeOfImprovement()
     {
         return $this->typeOfImprovement;
-    }
-
-    /**
-     * Set gallons
-     *
-     * @param string $gallons
-     * @return Permit
-     */
-    public function setGallons($gallons)
-    {
-        $this->gallons = $gallons;
-
-        return $this;
-    }
-
-    /**
-     * Get gallons
-     *
-     * @return string 
-     */
-    public function getGallons()
-    {
-        return $this->gallons;
     }
 }
