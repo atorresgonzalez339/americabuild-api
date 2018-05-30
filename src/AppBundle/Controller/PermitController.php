@@ -304,6 +304,22 @@ class PermitController extends BaseController
                 throw new \Exception($permitUPSaved["error"], 4000);
             }
 
+            /******************Permit fees*****************************/
+            $permitFees = $request->get("permitFees");
+            if ( !isset( $permitFees ) )
+            {
+                throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "permitFees")), 4000);
+            }
+
+            foreach ($permitFees as $value)
+            {
+                $value["permit"] =$permitSaved['data']['id'];
+                $permitUPSaved = $this->saveModel('PermitFees', $value, array("PermitFees"=>array("Validation")), false);
+                if (!$permitUPSaved["success"]) {
+                    throw new \Exception($permitUPSaved["error"], 4000);
+                }
+            }
+
             $repo->commit();
             return new View($permitSaved,Response::HTTP_OK);
         }
