@@ -129,7 +129,7 @@ class UserController extends BaseController
             }
         }
 
-        $data["role"] = 2; //AUTHENTICATED_USER
+        $data["roles"] = array(2); //AUTHENTICATED_USER
         $data["active"] = false;
         $data["company"] = 1; // Default Company
 
@@ -196,6 +196,7 @@ class UserController extends BaseController
         unset($data["password"]);
         unset($data["salt"]);
         unset($data["token"]);
+        unset($data["roles"]);
         if (!isset($data['id']))
         {
             return new View(array("success"=>false,"error"=>"No user identifier provided to performe the update action"), Response::HTTP_OK);
