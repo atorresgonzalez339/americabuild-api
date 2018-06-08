@@ -42,7 +42,8 @@ class Role implements \Symfony\Component\Security\Core\Role\RoleInterface
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\User", mappedBy="role")
+     *
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", mappedBy="roles")
      */
     private $users;
 

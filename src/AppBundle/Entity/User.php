@@ -16,7 +16,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity(fields={"username"}, message="A user with the same email already exist")
  * @UniqueEntity(fields={"licenseNumber"}, message="A user with the same license number already exist")
  */
-class User implements UserInterface {
+class User implements UserInterface
+{
 
     /**
      * @var int
@@ -99,14 +100,17 @@ class User implements UserInterface {
     private $licenseNumber;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Role", inversedBy="users")
-     * @ORM\JoinColumn(
-     *     name="idrole",
-     *     referencedColumnName="id",
-     *     nullable=false
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Role",inversedBy="users")
+     * @ORM\JoinTable(name="tbuser_role",
+     *          joinColumns={
+     *              @ORM\JoinColumn(name="user_id", referencedColumnName="id",onDelete="CASCADE")
+     *          },
+     *          inverseJoinColumns={
+     *              @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *          }
      * )
      */
-    private $role;
+    private $roles;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserType", inversedBy="users")
@@ -137,27 +141,34 @@ class User implements UserInterface {
      */
     private $permitUsers;
 
-    /**
-     * Constructor
-     */
-    public function __construct()
+
+    public function eraseCredentials()
     {
-        $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
-        $this->permits = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->permitUsers = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    public function eraseCredentials() {}
-
-    public function getPassword() {
+    public function getPassword()
+    {
         return $this->password;
     }
 
-    public function getRoles() {
-        return array($this->role->getRole());
+    public function getRoles()
+    {
+
+        $roles = array();
+        foreach ($this->roles as $role) {
+            $roles[] = $role->getRole();
+        }
+
+        return $roles;
     }
 
-    public function getSalt() {
+    public function getRole()
+    {
+        return $this->roles;
+    }
+
+    public function getSalt()
+    {
         return $this->salt;
     }
 
@@ -169,6 +180,35 @@ class User implements UserInterface {
     public function getUsername()
     {
         return $this->username;
+    }
+
+    /**
+     * Set password
+     *
+     * @param string $password
+     * @return User
+     */
+    public function setPassword($password)
+    {
+        if (!empty($password)) {
+
+            $encode = new MessageDigestPasswordEncoder(
+                'sha512', false,1
+            );
+
+            $this->password = $encode->encodePassword($password, $this->salt);
+        }
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
+        $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->permits = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->permitUsers = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -195,12 +235,12 @@ class User implements UserInterface {
     }
 
     /**
-     * Set name
+     * Set fullname
      *
      * @param string $fullname
      * @return User
      */
-    public function setFullName($fullname)
+    public function setFullname($fullname)
     {
         $this->fullname = $fullname;
 
@@ -208,31 +248,13 @@ class User implements UserInterface {
     }
 
     /**
-     * Get name
+     * Get fullname
      *
      * @return string
      */
-    public function getFullName()
+    public function getFullname()
     {
         return $this->fullname;
-    }
-
-    /**
-     * Set password
-     *
-     * @param string $password
-     * @return User
-     */
-    public function setPassword($password)
-    {
-        if (!empty($password)) {
-
-            $encode = new MessageDigestPasswordEncoder(
-                'sha512', false,1
-            );
-
-            $this->password = $encode->encodePassword($password, $this->salt);
-        }
     }
 
     /**
@@ -318,26 +340,131 @@ class User implements UserInterface {
     }
 
     /**
-     * Set role
+     * Set phoneNumber
      *
-     * @param \AppBundle\Entity\Role $role
+     * @param string $phoneNumber
      * @return User
      */
-    public function setRole(\AppBundle\Entity\Role $role)
+    public function setPhoneNumber($phoneNumber)
     {
-        $this->role = $role;
+        $this->phoneNumber = $phoneNumber;
 
         return $this;
     }
 
     /**
-     * Get role
+     * Get phoneNumber
      *
-     * @return \AppBundle\Entity\Role
+     * @return string
      */
-    public function getRole()
+    public function getPhoneNumber()
     {
-        return $this->role;
+        return $this->phoneNumber;
+    }
+
+    /**
+     * Set address
+     *
+     * @param string $address
+     * @return User
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * Set licenseNumber
+     *
+     * @param string $licenseNumber
+     * @return User
+     */
+    public function setLicenseNumber($licenseNumber)
+    {
+        $this->licenseNumber = $licenseNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get licenseNumber
+     *
+     * @return string
+     */
+    public function getLicenseNumber()
+    {
+        return $this->licenseNumber;
+    }
+
+    /**
+     * Add roles
+     *
+     * @param \AppBundle\Entity\Role $roles
+     * @return User
+     */
+    public function addRole(\AppBundle\Entity\Role $roles)
+    {
+        $this->roles[] = $roles;
+
+        return $this;
+    }
+
+    /**
+     * Remove roles
+     *
+     * @param \AppBundle\Entity\Role $roles
+     */
+    public function removeRole(\AppBundle\Entity\Role $roles)
+    {
+        $this->roles->removeElement($roles);
+    }
+
+    /**
+     * Set userType
+     *
+     * @param \AppBundle\Entity\UserType $userType
+     * @return User
+     */
+    public function setUserType(\AppBundle\Entity\UserType $userType = null)
+    {
+        $this->userType = $userType;
+
+        return $this;
+    }
+
+    /**
+     * Get userType
+     *
+     * @return \AppBundle\Entity\UserType
+     */
+    public function getUserType()
+    {
+        return $this->userType;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \AppBundle\Entity\Company $company
+     * @return User
+     */
+    public function setCompany(\AppBundle\Entity\Company $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
     }
 
     /**
@@ -348,18 +475,6 @@ class User implements UserInterface {
     public function getCompany()
     {
         return $this->company;
-    }
-
-    /**
-     * Set company
-     *
-     * @param \AppBundle\Entity\Company $company
-     * @return User
-     */
-    public function setCompany(\AppBundle\Entity\Company $company)
-    {
-        $this->company = $company;
-        return $this;
     }
 
     /**
@@ -421,102 +536,11 @@ class User implements UserInterface {
     /**
      * Get permitUsers
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getPermitUsers()
     {
         return $this->permitUsers;
     }
 
-    /**
-     * Set userType
-     *
-     * @param \AppBundle\Entity\UserType $userType
-     * @return User
-     */
-    public function setUserType(\AppBundle\Entity\UserType $userType = null)
-    {
-        $this->userType = $userType;
-
-        return $this;
-    }
-
-    /**
-     * Get userType
-     *
-     * @return \AppBundle\Entity\UserType 
-     */
-    public function getUserType()
-    {
-        return $this->userType;
-    }
-
-    /**
-     * Set phoneNumber
-     *
-     * @param string $phoneNumber
-     * @return User
-     */
-    public function setPhoneNumber($phoneNumber)
-    {
-        $this->phoneNumber = $phoneNumber;
-
-        return $this;
-    }
-
-    /**
-     * Get phoneNumber
-     *
-     * @return string 
-     */
-    public function getPhoneNumber()
-    {
-        return $this->phoneNumber;
-    }
-
-    /**
-     * Set address
-     *
-     * @param string $address
-     * @return User
-     */
-    public function setAddress($address)
-    {
-        $this->address = $address;
-
-        return $this;
-    }
-
-    /**
-     * Get address
-     *
-     * @return string 
-     */
-    public function getAddress()
-    {
-        return $this->address;
-    }
-
-    /**
-     * Set licenseNumber
-     *
-     * @param string $licenseNumber
-     * @return User
-     */
-    public function setLicenseNumber($licenseNumber)
-    {
-        $this->licenseNumber = $licenseNumber;
-
-        return $this;
-    }
-
-    /**
-     * Get licenseNumber
-     *
-     * @return string 
-     */
-    public function getLicenseNumber()
-    {
-        return $this->licenseNumber;
-    }
 }
