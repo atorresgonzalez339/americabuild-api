@@ -196,12 +196,12 @@ class PermitController extends BaseController
             $permitUser["permit"] = $permitSaved['data']['id'];
             $permitUser["permitUserProfile"] = $permitUPSaved['data']['id'];
 
-            $ownerType = $repoUserRT->findOneBy(array("type"=>"OWNER")); //must be tenant
-            if ( !$ownerType )
+            $tenantType = $repoUserRT->findOneBy(array("type"=>"TENANT"));
+            if ( !$tenantType )
             {
-                throw new \Exception($this->get('translator')->trans('validation.permittype.notfound', array("ptype" => "OWNER")), 4000);
+                throw new \Exception($this->get('translator')->trans('validation.permittype.notfound', array("ptype" => "TENANT")), 4000);
             }
-            $permitUser["permitUserRelationType"] = $ownerType->getId();
+            $permitUser["permitUserRelationType"] = $tenantType->getId();
             $permitUserSaved = $this->saveModel('PermitUser', $permitUser, array(), false);
 
             if (!$permitUserSaved["success"]) {
@@ -292,7 +292,7 @@ class PermitController extends BaseController
             $permitUser["permit"] = $permitSaved['data']['id'];
             $permitUser["permitUserProfile"] = $permitUPSaved['data']['id'];
 
-            $architectType = $repoUserRT->findOneBy(array("type"=>"CONTRACTOR"/*"ARCHITECT should be in the database"*/));
+            $architectType = $repoUserRT->findOneBy(array("type"=>"ARCHITECT"));
             if ( !$architectType )
             {
                 throw new \Exception($this->get('translator')->trans('validation.permittype.notfound', array("ptype" => "ARCHITECT")), 4000);
