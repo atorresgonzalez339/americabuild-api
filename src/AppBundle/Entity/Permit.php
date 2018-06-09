@@ -87,62 +87,9 @@ class Permit
     /**
      * @var string
      *
-     * @ORM\Column(name="description_of_work ",  type="text")
-     */
-    private $descriptionOfWork;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="estimate_value", type="decimal", precision=15, scale=8)
-     */
-    private $estimateValue;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="area ",  type="decimal", precision=15, scale=8)
-     */
-    private $area;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="length ",  type="decimal",  precision=15, scale=8)
-     */
-    private $length;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="owner_builder", type="boolean", options={"default" : false})
      */
     private $ownerBuilder;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="gallons", type="string", length=255)
-     */
-    private $gallons;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PermitType", inversedBy="permits")
-     * @ORM\JoinColumn(
-     *     name="typeid",
-     *     referencedColumnName="id",
-     *     nullable=false)
-     */
-    private $type;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="permits")
-     * @ORM\JoinColumn(
-     *     name="userid",
-     *     referencedColumnName="id",
-     *     nullable=false)
-     */
-    private $user;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitUser", mappedBy="permit")
@@ -162,6 +109,11 @@ class Permit
      *     nullable=false)
      */
     private $typeOfImprovement;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitPermitType", mappedBy="permit")
+     */
+    private $permitPermitTypes;
     /**
      * Constructor
      */
@@ -169,6 +121,7 @@ class Permit
     {
         $this->permitUsers = new \Doctrine\Common\Collections\ArrayCollection();
         $this->permitFees = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->permitPermitTypes = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -389,98 +342,6 @@ class Permit
     }
 
     /**
-     * Set descriptionOfWork
-     *
-     * @param string $descriptionOfWork
-     * @return Permit
-     */
-    public function setDescriptionOfWork($descriptionOfWork)
-    {
-        $this->descriptionOfWork = $descriptionOfWork;
-
-        return $this;
-    }
-
-    /**
-     * Get descriptionOfWork
-     *
-     * @return string 
-     */
-    public function getDescriptionOfWork()
-    {
-        return $this->descriptionOfWork;
-    }
-
-    /**
-     * Set estimateValue
-     *
-     * @param string $estimateValue
-     * @return Permit
-     */
-    public function setEstimateValue($estimateValue)
-    {
-        $this->estimateValue = $estimateValue;
-
-        return $this;
-    }
-
-    /**
-     * Get estimateValue
-     *
-     * @return string 
-     */
-    public function getEstimateValue()
-    {
-        return $this->estimateValue;
-    }
-
-    /**
-     * Set area
-     *
-     * @param string $area
-     * @return Permit
-     */
-    public function setArea($area)
-    {
-        $this->area = $area;
-
-        return $this;
-    }
-
-    /**
-     * Get area
-     *
-     * @return string 
-     */
-    public function getArea()
-    {
-        return $this->area;
-    }
-
-    /**
-     * Set length
-     *
-     * @param string $length
-     * @return Permit
-     */
-    public function setLength($length)
-    {
-        $this->length = $length;
-
-        return $this;
-    }
-
-    /**
-     * Get length
-     *
-     * @return string 
-     */
-    public function getLength()
-    {
-        return $this->length;
-    }
-
-    /**
      * Set ownerBuilder
      *
      * @param boolean $ownerBuilder
@@ -501,75 +362,6 @@ class Permit
     public function getOwnerBuilder()
     {
         return $this->ownerBuilder;
-    }
-
-    /**
-     * Set gallons
-     *
-     * @param string $gallons
-     * @return Permit
-     */
-    public function setGallons($gallons)
-    {
-        $this->gallons = $gallons;
-
-        return $this;
-    }
-
-    /**
-     * Get gallons
-     *
-     * @return string 
-     */
-    public function getGallons()
-    {
-        return $this->gallons;
-    }
-
-    /**
-     * Set type
-     *
-     * @param \AppBundle\Entity\PermitType $type
-     * @return Permit
-     */
-    public function setType(\AppBundle\Entity\PermitType $type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Get type
-     *
-     * @return \AppBundle\Entity\PermitType 
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * Set user
-     *
-     * @param \AppBundle\Entity\User $user
-     * @return Permit
-     */
-    public function setUser(\AppBundle\Entity\User $user)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return \AppBundle\Entity\User 
-     */
-    public function getUser()
-    {
-        return $this->user;
     }
 
     /**
@@ -659,5 +451,38 @@ class Permit
     public function getTypeOfImprovement()
     {
         return $this->typeOfImprovement;
+    }
+
+    /**
+     * Add permitPermitTypes
+     *
+     * @param \AppBundle\Entity\PermitPermitType $permitPermitTypes
+     * @return Permit
+     */
+    public function addPermitPermitType(\AppBundle\Entity\PermitPermitType $permitPermitTypes)
+    {
+        $this->permitPermitTypes[] = $permitPermitTypes;
+
+        return $this;
+    }
+
+    /**
+     * Remove permitPermitTypes
+     *
+     * @param \AppBundle\Entity\PermitPermitType $permitPermitTypes
+     */
+    public function removePermitPermitType(\AppBundle\Entity\PermitPermitType $permitPermitTypes)
+    {
+        $this->permitPermitTypes->removeElement($permitPermitTypes);
+    }
+
+    /**
+     * Get permitPermitTypes
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPermitPermitTypes()
+    {
+        return $this->permitPermitTypes;
     }
 }
