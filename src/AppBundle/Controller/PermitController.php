@@ -82,7 +82,6 @@ class PermitController extends BaseController
         try {
             // permit data
             $permit["user"] = $user->getId();
-            $permit["type"] = $request->get("permitType");
             $createdAt = new \DateTime("now");
             $permit["createdAt"] = $createdAt->format('Y-m-d H:i:s');
             $permit["updatedAt"] = $createdAt->format('Y-m-d H:i:s');
@@ -93,25 +92,38 @@ class PermitController extends BaseController
             $permit["subdivision"] = $request->get("subdivision");
             $permit["pbpg"] = $request->get("pbpg");
             $permit["currentUseOfProperty"] = $request->get("currentUseOfProperty");
-            $permit["descriptionOfWork"] = $request->get("descriptionOfWork");
-            $permit["estimateValue"] = $request->get("estimateValue");
-            $permit["area"] = $request->get("area");
-            $permit["length"] = $request->get("length");
-            $permit['gallons'] = $request->get("gallons");
             $permit["typeOfImprovement"] = $request->get("typeOfImprovement");
             $permit['ownerBuilder'] = $request->get("ownerBuilder");
-
-            if (isset($permit["estimateValue"]) && isset($permit["area"]) && isset($permit["length"]))
+            if (isset($permit["estimateValue"]))
             {
                 $permit["estimateValue"] = doubleval($permit["estimateValue"]);
-                $permit["area"] = doubleval($permit["area"]);
-                $permit["length"] = doubleval($permit["length"]);
             }
 
             $repo->beginTransaction();
             $permitSaved = $this->saveModel('Permit', $permit, array("Permit" => array("ValuesValidation")), false);
             if (!$permitSaved["success"]) {
                 throw new \Exception($permitSaved["error"], 4000);
+            }
+
+            /******************Permit Permit Types*****************************/
+            $permitPermitTypes = $request->get("permitPermitTypes");
+            if ( !isset( $permitPermitTypes ) )
+            {
+                throw new \Exception( $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "permitPermitTypes")), 4000);
+            }
+
+            foreach ($permitPermitTypes as $value)
+            {
+                $value["permit"] =$permitSaved['data']['id'];
+                if (isset($value["area"]) && isset($value["length"]))
+                {
+                    $permit["area"] = doubleval($value["area"]);
+                    $permit["length"] = doubleval($value["length"]);
+                }
+                $permitPTSaved = $this->saveModel('PermitPermitType', $value, array("PermitPermitType"=>array("Validation")), false);
+                if (!$permitPTSaved["success"]) {
+                    throw new \Exception($permitPTSaved["error"], 4000);
+                }
             }
 
             // permit user profile owner information
