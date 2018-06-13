@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Permit
  *
  * @ORM\Table(name="tbpermit_permit_type")
- * @ORM\Entity(repositoryClass="AppBundle\RepositoryPermitPermitTypeRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PermitPermitTypeRepository")
  */
 class PermitPermitType
 {
