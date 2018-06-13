@@ -15,20 +15,13 @@ class PermitValidator extends AbstractValidator {
 
     public function validate(array $data, $objectPersist, $validationType)
     {
-        $parameters = array("type","folioNumber", "numberOfUnits", "lot", "block", "subdivision", "pbpg", "currentUseOfProperty", "descriptionOfWork", "estimateValue", "area", "length", "typeOfImprovement", "gallons");
+        $parameters = array("folioNumber", "numberOfUnits", "lot", "block", "subdivision", "pbpg", "currentUseOfProperty", "typeOfImprovement");
         foreach ( $parameters as $parameter)
         {
             if ( !isset($data[$parameter]) || empty($data[$parameter]))
             {
                 return $this->getTranslator()->trans('validation.parameters.requiered', array("paramname"=>$parameter));
             }
-        }
-
-        $repoPermitType = $this->container->get('doctrine')->getRepository('AppBundle:PermitType');
-        $permitType = $repoPermitType->find($data['type']);
-        if (!$permitType)
-        {
-            return $this->getTranslator()->trans('validation.object.notfound', array("element"=>"permit type"));
         }
 
         $repoPermitImprovementType = $this->container->get('doctrine')->getRepository('AppBundle:PermitImprovementType');
