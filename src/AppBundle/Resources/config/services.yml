@@ -28,6 +28,8 @@ services:
          class: AppBundle\Libs\Validator\LocationValidator
  validator.permitfees:
          class: AppBundle\Libs\Validator\PermitFeesValidator
+ validator.permitpermittype:
+         class: AppBundle\Libs\Validator\PermitPermitTypeValidator
  app.request_listener:
         class: AppBundle\Listeners\RequestListener
         arguments: ["@service_container"]

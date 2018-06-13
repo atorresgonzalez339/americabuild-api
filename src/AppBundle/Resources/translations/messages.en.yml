@@ -28,3 +28,4 @@ validation.object.notfound: The provided element does not exists.
 validation.permittype.notfound: There is not permit type ptype in the database.
 validation.parameter.invalidtype: The type of the parameter 'paramname' is invalid. Expected type: ptype.
 validation.permitfees.exist: Invalid permit fees. Two permit fees with the same company fees can't exit.
+validation.permittype.exist: Invalid permit type. Two permit types in the same permit can't exit.
