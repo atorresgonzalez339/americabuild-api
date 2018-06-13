@@ -31,7 +31,7 @@ class CompanyFeesController extends BaseController
      * )
      * @Rest\Get("/api/companyfees")
      * @Method({"GET"})
-     * @Secure(roles="ROLE_ADMINISTRATOR")
+     * @Secure(roles="ROLE_ADMINISTRATOR, ROLE_AUTHENTICATED")
      */
     public function getAllAction()
     {
