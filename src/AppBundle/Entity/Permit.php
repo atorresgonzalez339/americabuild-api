@@ -92,6 +92,15 @@ class Permit
     private $ownerBuilder;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="permits")
+     * @ORM\JoinColumn(
+     *     name="userid",
+     *     referencedColumnName="id",
+     *     nullable=false)
+     */
+    private $user;
+
+    /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitUser", mappedBy="permit")
      */
     private $permitUsers;
@@ -362,6 +371,29 @@ class Permit
     public function getOwnerBuilder()
     {
         return $this->ownerBuilder;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     * @return Permit
+     */
+    public function setUser(\AppBundle\Entity\User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 
     /**
