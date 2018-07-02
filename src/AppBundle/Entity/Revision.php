@@ -46,6 +46,18 @@ class Revision
      */
     private $permitType;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitRevision", mappedBy="revision")
+     */
+    private $permitRevisions;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->permitRevisions = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -127,5 +139,39 @@ class Revision
     public function getPermitType()
     {
         return $this->permitType;
+    }
+
+    /**
+     * Add permitRevision
+     *
+     * @param \AppBundle\Entity\PermitRevision $permitRevision
+     *
+     * @return Revision
+     */
+    public function addPermitRevision(\AppBundle\Entity\PermitRevision $permitRevision)
+    {
+        $this->permitRevisions[] = $permitRevision;
+
+        return $this;
+    }
+
+    /**
+     * Remove permitRevision
+     *
+     * @param \AppBundle\Entity\PermitRevision $permitRevision
+     */
+    public function removePermitRevision(\AppBundle\Entity\PermitRevision $permitRevision)
+    {
+        $this->permitRevisions->removeElement($permitRevision);
+    }
+
+    /**
+     * Get permitRevisions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPermitRevisions()
+    {
+        return $this->permitRevisions;
     }
 }

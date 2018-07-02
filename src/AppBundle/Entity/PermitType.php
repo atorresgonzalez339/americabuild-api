@@ -53,7 +53,7 @@ class PermitType
     private $feesItems;
 
     /**
-     * @ORM\OneToMany(targetEntity="Revision", mappedBy="permitType")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Revision", mappedBy="permitType")
      */
     private $revisions;
 
