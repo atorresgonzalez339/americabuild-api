@@ -53,6 +53,11 @@ class PermitType
     private $feesItems;
 
     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Revisions", mappedBy="permitType")
+     */
+    private $revisions;
+
+    /**
      * Get id
      *
      * @return integer 
