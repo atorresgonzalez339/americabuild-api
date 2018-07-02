@@ -5,14 +5,14 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Revisions
+ * Revision
  *
  * @author Yosviel Dominguez <yosvield@gmail.com>
  *
- * @ORM\Table(name="tbrevisions")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\RevisionsRepository")
+ * @ORM\Table(name="tbrevision")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\RevisionRepository")
  */
-class Revisions
+class Revision
 {
     /**
      * @var int
@@ -62,7 +62,7 @@ class Revisions
      *
      * @param string $name
      *
-     * @return Revisions
+     * @return Revision
      */
     public function setName($name)
     {
@@ -86,7 +86,7 @@ class Revisions
      *
      * @param string $description
      *
-     * @return Revisions
+     * @return Revision
      */
     public function setDescription($description)
     {
@@ -110,7 +110,7 @@ class Revisions
      *
      * @param \AppBundle\Entity\PermitType $permitType
      *
-     * @return Revisions
+     * @return Revision
      */
     public function setPermitType(\AppBundle\Entity\PermitType $permitType)
     {
