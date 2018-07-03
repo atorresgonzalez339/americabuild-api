@@ -43,7 +43,7 @@ class PermitType
     private $type;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Permit", mappedBy="type")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitPermitType", mappedBy="type")
      */
     private $permits;
 

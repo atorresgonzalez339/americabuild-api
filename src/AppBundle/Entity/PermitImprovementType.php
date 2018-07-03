@@ -43,7 +43,7 @@ class PermitImprovementType
     private $type;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitChangeType", mappedBy="typeOfImprovement")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Permit", mappedBy="typeOfImprovement")
      */
     private $permits;
 
