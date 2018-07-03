@@ -16,7 +16,7 @@
 !var/sessions/.gitkeep
 
 # Parameters
-#/app/config/parameters.yml
+/app/config/parameters.yml
 /app/config/parameters.ini
 
 # Managed by Composer
@@ -43,3 +43,12 @@
 vendor/composer/ClassLoader.php
 vendor/composer/LICENSE
 /nbproject/private/
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
