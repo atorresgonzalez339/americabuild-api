@@ -53,6 +53,11 @@ class PermitType
     private $feesItems;
 
     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Revision", mappedBy="permitType")
+     */
+    private $revisions;
+
+    /**
      * Get id
      *
      * @return integer 
@@ -170,6 +175,7 @@ class PermitType
     {
         $this->permits = new \Doctrine\Common\Collections\ArrayCollection();
         $this->feesItems = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -203,5 +209,39 @@ class PermitType
     public function getFeesItems()
     {
         return $this->feesItems;
+    }
+
+    /**
+     * Add revision
+     *
+     * @param \AppBundle\Entity\Revision $revision
+     *
+     * @return PermitType
+     */
+    public function addRevision(\AppBundle\Entity\Revision $revision)
+    {
+        $this->revisions[] = $revision;
+
+        return $this;
+    }
+
+    /**
+     * Remove revision
+     *
+     * @param \AppBundle\Entity\Revision $revision
+     */
+    public function removeRevision(\AppBundle\Entity\Revision $revision)
+    {
+        $this->revisions->removeElement($revision);
+    }
+
+    /**
+     * Get revisions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRevisions()
+    {
+        return $this->revisions;
     }
 }

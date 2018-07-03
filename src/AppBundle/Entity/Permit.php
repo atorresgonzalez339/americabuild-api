@@ -123,6 +123,12 @@ class Permit
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitPermitType", mappedBy="permit")
      */
     private $permitPermitTypes;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PermitRevision", mappedBy="permit")
+     */
+    private $permitRevisions;
+
     /**
      * Constructor
      */
@@ -131,6 +137,7 @@ class Permit
         $this->permitUsers = new \Doctrine\Common\Collections\ArrayCollection();
         $this->permitFees = new \Doctrine\Common\Collections\ArrayCollection();
         $this->permitPermitTypes = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->permitRevisions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -516,5 +523,39 @@ class Permit
     public function getPermitPermitTypes()
     {
         return $this->permitPermitTypes;
+    }
+
+    /**
+     * Add permitRevision
+     *
+     * @param \AppBundle\Entity\PermitRevision $permitRevision
+     *
+     * @return Permit
+     */
+    public function addPermitRevision(\AppBundle\Entity\PermitRevision $permitRevision)
+    {
+        $this->permitRevisions[] = $permitRevision;
+
+        return $this;
+    }
+
+    /**
+     * Remove permitRevision
+     *
+     * @param \AppBundle\Entity\PermitRevision $permitRevision
+     */
+    public function removePermitRevision(\AppBundle\Entity\PermitRevision $permitRevision)
+    {
+        $this->permitRevisions->removeElement($permitRevision);
+    }
+
+    /**
+     * Get permitRevisions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPermitRevisions()
+    {
+        return $this->permitRevisions;
     }
 }
