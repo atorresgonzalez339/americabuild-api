@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 /**
  * PermitType
@@ -60,7 +61,7 @@ class PermitType
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -83,7 +84,7 @@ class PermitType
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -106,7 +107,7 @@ class PermitType
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -129,7 +130,7 @@ class PermitType
     /**
      * Get type
      *
-     * @return string 
+     * @return string
      */
     public function getType()
     {
@@ -162,12 +163,13 @@ class PermitType
     /**
      * Get permits
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getPermits()
     {
         return $this->permits;
     }
+
     /**
      * Constructor
      */
@@ -204,7 +206,7 @@ class PermitType
     /**
      * Get feesItems
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getFeesItems()
     {

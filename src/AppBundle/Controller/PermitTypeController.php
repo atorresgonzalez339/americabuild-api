@@ -49,7 +49,27 @@ class PermitTypeController extends BaseController
      */
     public function getByIdAction($id)
     {
-        return new View($this->getDataOfModelById('PermitType',$id), Response::HTTP_OK);
+        return new View($this->getDataOfModelById('PermitType', $id), Response::HTTP_OK);
+    }
+
+    /**
+     * Return the PermitType of the permit with the provided id.
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Return the PermitType of the permit with the provided id",
+     *   statusCodes = {
+     *     200 = "Returned when successful"
+     *   }
+     * )
+     * @Rest\Get("/api/permittypes/permit/{id}")
+     * @Method({"GET"})
+     *
+     */
+    public function getByPermitAction($id)
+    {
+        $data = $this->getRepo('PermitType')->getByPermit($id);
+        return new View($this->normalizeResult('PermitType', $data), Response::HTTP_OK);
     }
 
     /**
@@ -91,14 +111,13 @@ class PermitTypeController extends BaseController
     {
         $data = $request->request->all();
 
-        if (!isset($data['id']))
-        {
-            return new View(array("success"=>false,"error"=>$this->get('translator')->trans('validation.updateid.notfound')), Response::HTTP_OK);
+        if (!isset($data['id'])) {
+            return new View(array("success" => false, "error" => $this->get('translator')->trans('validation.updateid.notfound')), Response::HTTP_OK);
         }
         $permitType = $this->getRepo('PermitType')->find($data['id']);
 
         if (!$permitType)
-            return new View(array("success"=>false,"error"=>$this->get('translator')->trans('validation.identifier.invalid', array("value"=>"Permit Type", "idvalue"=>$data["id"]))), Response::HTTP_OK);
+            return new View(array("success" => false, "error" => $this->get('translator')->trans('validation.identifier.invalid', array("value" => "Permit Type", "idvalue" => $data["id"]))), Response::HTTP_OK);
 
         $save = $this->saveModel('PermitType', $data);
         return new View($save, Response::HTTP_OK);
