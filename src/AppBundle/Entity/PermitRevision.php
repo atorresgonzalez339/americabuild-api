@@ -31,14 +31,14 @@ class PermitRevision
     private $createdAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Permit", inversedBy="permitRevisions")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PermitPermitType", inversedBy="permitRevisions")
      * @ORM\JoinColumn(
-     *     name="permit_id",
+     *     name="permitpermittype_id",
      *     referencedColumnName="id",
      *     nullable=false,
      *     onDelete="CASCADE")
      */
-    private $permit;
+    private $permitpermittype;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Revision", inversedBy="permitRevisions")
@@ -69,27 +69,51 @@ class PermitRevision
     }
 
     /**
-     * Set permit
+     * Set createdAt
      *
-     * @param \AppBundle\Entity\Permit $permit
+     * @param \DateTime $createdAt
      *
      * @return PermitRevision
      */
-    public function setPermit(\AppBundle\Entity\Permit $permit)
+    public function setCreatedAt($createdAt)
     {
-        $this->permit = $permit;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get permit
+     * Get createdAt
      *
-     * @return \AppBundle\Entity\Permit
+     * @return \DateTime
      */
-    public function getPermit()
+    public function getCreatedAt()
     {
-        return $this->permit;
+        return $this->createdAt;
+    }
+
+    /**
+     * Set permitpermittype
+     *
+     * @param \AppBundle\Entity\PermitPermitType $permitpermittype
+     *
+     * @return PermitRevision
+     */
+    public function setPermitpermittype(\AppBundle\Entity\PermitPermitType $permitpermittype)
+    {
+        $this->permitpermittype = $permitpermittype;
+
+        return $this;
+    }
+
+    /**
+     * Get permitpermittype
+     *
+     * @return \AppBundle\Entity\PermitPermitType
+     */
+    public function getPermitpermittype()
+    {
+        return $this->permitpermittype;
     }
 
     /**
@@ -114,29 +138,5 @@ class PermitRevision
     public function getRevision()
     {
         return $this->revision;
-    }
-
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return PermitRevision
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
     }
 }
