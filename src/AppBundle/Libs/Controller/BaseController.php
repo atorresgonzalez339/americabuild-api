@@ -297,4 +297,8 @@ class BaseController extends FOSRestController {
     public function getRepo($entity) {
         return $this->getManager()->getRepository('AppBundle:' . $entity);
     }
+    
+    public function getEm() {
+        return $this->getManager();
+    }
 }
