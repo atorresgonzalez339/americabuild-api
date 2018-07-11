@@ -2,6 +2,9 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\PermitPermitType;
+use AppBundle\Entity\PermitRevision;
+use AppBundle\Entity\Revision;
 use AppBundle\Libs\Controller\BaseController;
 use AppBundle\Listeners\ExceptionListener;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +22,46 @@ class RevisionController extends BaseController
 {
 
     /**
+     * Return the Permit revision list.
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Return the overall Fees Item List",
+     *   statusCodes = {
+     *     200 = "Returned when successful"
+     *   }
+     * )
+     * @Rest\Get("/api/permitrevision/{id}")
+     * @Method({"GET"})
+     */
+    public function getAllAction($id)
+    {
+        $premitRevisions = $this->getEm()->getRepository(PermitRevision::class)->getByPermite($id);
+
+        return new View($this->normalizeResult('PermitRevision', $premitRevisions), Response::HTTP_OK);
+    }
+
+    /**
+     * Return the Permit revision.
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Return the overall Fees Item List",
+     *   statusCodes = {
+     *     200 = "Returned when successful"
+     *   }
+     * )
+     * @Rest\Get("/api/get-permitrevision/{id}")
+     * @Method({"GET"})
+     */
+    public function getPermiRevisionAction($id)
+    {
+        $premitRevision = $this->getEm()->find(PermitRevision::class, $id);
+
+        return new View($this->normalizeResult('PermitRevision', $premitRevision), Response::HTTP_OK);
+    }
+
+    /**
      * Return the Revisions of the permit with the provided id.
      *
      * @author Yosviel Dominguez <yosvield@gmail.com>
@@ -29,13 +72,15 @@ class RevisionController extends BaseController
      *     200 = "Returned when successful"
      *   }
      * )
-     * @Rest\Get("/api/revision/permit/{id}")
+     * @Rest\Get("/api/revision/permittype/{id}")
      * @Method({"GET"})
      *
      */
-    public function getByPermitAction($id)
+    public function getByPermitTypeAction($id)
     {
-        $data = $this->getRepo('Revision')->getByPermit($id);
+        $em = $this->getEm();
+
+        $data = $em->getRepository(Revision::class)->findBy(array('permitType' => $id));
         return new View($this->normalizeResult('Revision', $data), Response::HTTP_OK);
     }
 
@@ -53,53 +98,74 @@ class RevisionController extends BaseController
      * @Rest\Post("/api/revision")
      * @Method({"POST"})
      */
-    public function postRevisionAction(Request $request)
+    public function createRevisionAction(Request $request)
     {
-        $repoRevision = $this->getRepo("Revision");
         try {
-            $revisions = $request->get('permitrevision');
-            $repoRevision->beginTransaction();
-            foreach ($revisions as $revision) {
+            $em = $this->getEm();
+            $idpermit = $request->get('idpermit');
+            $revision = $request->get('revision');
+            $permitType = $request->get('permitType');
 
-                if (!isset($revision['description']) || empty($revision['description'])) {
-                    return new View(array("success" => false, "error" => $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "description"))), Response::HTTP_OK);
-                } else if (!isset($revision['name']) || empty($revision['name'])) {
-                    return new View(array("success" => false, "error" => $this->get('translator')->trans('validation.parameters.requiered', array("paramname" => "name"))), Response::HTTP_OK);
-                }
+            $permitPermitType = $em->getRepository(PermitPermitType::class)->findBy(array('type' => $permitType['id'], 'permit' => $idpermit));
+            $revision = $em->getRepository(Revision::class)->find($revision['id']);
 
-                $isAdd = !isset($revision['id']);
+            $permitRevision = new PermitRevision();
+            $permitRevision->setPermitpermittype($permitPermitType[0]);
+            $permitRevision->setRevision($revision);
 
-                $revisionSaved = $this->saveModel('Revision', $revision, array(), false);
+            $em->persist($permitRevision);
+            $em->flush();
 
-                if (!$revisionSaved["success"]) {
-                    throw new \Exception($revisionSaved["error"], 4000);
-                }
-
-                if ($isAdd) {
-                    $permitRevision['permit'] = $request->get('idpermit');
-                    $permitRevision['revision'] = $revisionSaved['data']['id'];
-                    $permitRevisionSaved = $this->saveModel('PermitRevision', $permitRevision, array(), false);
-                    if (!$permitRevisionSaved["success"]) {
-                        throw new \Exception($permitRevisionSaved["error"], 4000);
-                    }
-                }
-            }
-
-            $deletes = $request->get('todelete', array());
-            foreach ($deletes as $id) {
-                $this->removeModel('Revision', $id);
-            }
-
-            $repoRevision->commit();
-            return new View(array('success' => true), Response::HTTP_OK);
+            return new View(array('success' => true), Response::HTTP_CREATED);
         } catch (\Exception $ex) {
-            $repoRevision->rollback();
-            $this->resetManager();
-            if ($ex->getCode() != 4000) {
-                return $this->manageException($ex);
-            } else {
-                return array('success' => false, 'error' => $ex->getMessage());
-            }
+            return array('success' => false, 'error' => $ex->getMessage());
         }
+    }
+
+    /**
+     * Update a Revision for permit
+     *
+     * @author Yosviel Dominguez <yosvield@gmail.com>
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Update a Revision for permit",
+     *   statusCodes = {
+     *     200 = "Returned when successful"
+     *   }
+     * )
+     * @Rest\Put("/api/revision/{id}")
+     * @Method({"PUT"})
+     */
+    public function updateRevisionAction($id, Request $request)
+    {
+        try {
+            $em = $this->getEm();
+            $idpermit = $request->get('idpermit');
+            $revision = $request->get('revision');
+            $permitType = $request->get('permitType');
+
+            $permitPermitType = $em->getRepository(PermitPermitType::class)->findBy(array('type' => $permitType['id'], 'permit' => $idpermit));
+            $revision = $em->getRepository(Revision::class)->find($revision['id']);
+
+            $permitRevision = $em->find(PermitRevision::class, $id);
+            $permitRevision->setPermitpermittype($permitPermitType[0]);
+            $permitRevision->setRevision($revision);
+
+            $em->persist($permitRevision);
+            $em->flush();
+
+            return new View(array('success' => true), Response::HTTP_CREATED);
+        } catch (\Exception $ex) {
+            return array('success' => false, 'error' => $ex->getMessage());
+        }
+    }
+
+    /**
+     * @Rest\Delete("/api/permitrevision/{id}")
+     * @Method({"DELETE"})
+     */
+    public function deletePermitRevisionAction($id)
+    {
+        return new View($this->removeModel('PermitRevision', $id), Response::HTTP_OK);
     }
 }

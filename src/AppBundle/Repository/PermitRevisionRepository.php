@@ -19,4 +19,19 @@ class PermitRevisionRepository extends BaseRepository {
     public function getBaseQuery($baseEntity, $start = 0, $limit = 30, $filters = array(), $columnsAlias = array(), $decorator = ResultDecorator::DEFAULT_DECORATOR) {
 
     }
+
+    /**
+     * @author Yosviel Dominguez <yosvield@gmail.com>
+     * @param $idpermit
+     * @return array
+     */
+    public function getByPermite($idpermit){
+        $qb = $this->createQueryBuilder('permit_revision')
+            ->innerJoin('permit_revision.permitpermittype', 'permitpermittype')
+            ->innerJoin('permitpermittype.permit', 'permit')
+            ->andWhere("permit.id = (:idpermit)")
+            ->setParameter('idpermit', $idpermit);
+
+        return $qb->getQuery()->getResult();
+    }
 }

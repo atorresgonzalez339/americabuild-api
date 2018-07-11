@@ -63,7 +63,7 @@ class PermitPermitType
      *     referencedColumnName="id",
      *     nullable=false)
      */
-    private $type;
+        private $type;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Permit", inversedBy="permitPermitTypes")

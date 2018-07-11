@@ -24,12 +24,11 @@ class RevisionRepository extends BaseRepository {
      * @param $idpermit
      * @return array
      */
-    public function getByPermit($idpermit){
+    public function getByPermitType($idpermittype){
         $qb = $this->createQueryBuilder('revision')
-            ->innerJoin('revision.permitRevisions', 'permitRevisions')
-            ->innerJoin('permitRevisions.permit', 'permit')
-            ->andWhere("permit.id = (:idpermit)")
-            ->setParameter('idpermit', $idpermit);
+            ->innerJoin('revision.permitType', 'permitType')
+            ->andWhere("permitType.id = (:idpermittype)")
+            ->setParameter('idpermittype', $idpermittype);
 
         return $qb->getQuery()->getResult();
     }

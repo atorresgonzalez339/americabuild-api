@@ -57,3 +57,5 @@ services:
         class: AppBundle\Libs\EntityNormalizer\CompanyFeesNormalizer
  normalizer.revision:
         class: AppBundle\Libs\EntityNormalizer\RevisionNormalizer
+ normalizer.permitrevision:
+        class: AppBundle\Libs\EntityNormalizer\PermitRevisionNormalizer
