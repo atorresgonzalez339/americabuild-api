@@ -72,15 +72,15 @@ class RevisionController extends BaseController
      *     200 = "Returned when successful"
      *   }
      * )
-     * @Rest\Get("/api/revision/permittype/{id}")
+     * @Rest\Get("/api/revision/permittype/{id}/{idpermit}")
      * @Method({"GET"})
      *
      */
-    public function getByPermitTypeAction($id)
+    public function getByPermitTypeAction($id, $idpermit)
     {
         $em = $this->getEm();
 
-        $data = $em->getRepository(Revision::class)->findBy(array('permitType' => $id));
+        $data = $em->getRepository(Revision::class)->getByPermitTypeExcludePermit($id, $idpermit);
         return new View($this->normalizeResult('Revision', $data), Response::HTTP_OK);
     }
 

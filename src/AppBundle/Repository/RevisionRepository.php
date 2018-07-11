@@ -21,13 +21,40 @@ class RevisionRepository extends BaseRepository {
 
     /**
      * @author Yosviel Dominguez <yosvield@gmail.com>
-     * @param $idpermit
+     * @param $idpermittype
      * @return array
      */
     public function getByPermitType($idpermittype){
         $qb = $this->createQueryBuilder('revision')
             ->innerJoin('revision.permitType', 'permitType')
             ->andWhere("permitType.id = (:idpermittype)")
+            ->setParameter('idpermittype', $idpermittype);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Para listar el select cuando se gestionar las revision, excluyendo los que tiene seleccionado
+     * @author Yosviel Dominguez <yosvield@gmail.com>
+     * @param $idpermittype
+     * @return array
+     */
+    public function getByPermitTypeExcludePermit($idpermittype, $idpermit){
+        $qb1 = $this->createQueryBuilder('revision')
+            ->select('revision.id')
+            ->innerJoin('revision.permitRevisions', 'permitRevisions')
+            ->innerJoin('permitRevisions.permitpermittype', 'permitpermittype')
+            ->innerJoin('permitpermittype.permit', 'permit')
+            ->andWhere("permit.id = (:idpermit)")
+            ->setParameter('idpermit', $idpermit);
+
+        $idsRevisionOfPermit = $qb1->getQuery()->getResult();
+
+        $qb = $this->createQueryBuilder('revision')
+            ->innerJoin('revision.permitType', 'permitType')
+            ->andWhere("revision.id not in (:ids)")
+            ->andWhere("permitType.id = (:idpermittype)")
+            ->setParameter('ids', $idsRevisionOfPermit)
             ->setParameter('idpermittype', $idpermittype);
 
         return $qb->getQuery()->getResult();
